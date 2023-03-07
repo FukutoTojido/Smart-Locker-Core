@@ -7,6 +7,9 @@ React Native app for Smart Locker service
 
 ## Setup
 - Clone this repository through `git clone https://github.com/FukutoTojido/Smart-Locker-Core.git`
+
+- After cloning the project, run `git submodule update --init --recursive` to initialize the submodules
+
 - `cd Smart-Locker-Core && npm i`
 
 ## Running
