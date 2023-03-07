@@ -12,5 +12,7 @@ React Native app for Smart Locker service
 
 - `cd Smart-Locker-Core && npm i`
 
+> **Note**: The submodule currently still have some issues with the path, so a separate `git clone` to a different directory is required to work on the backend code.
+
 ## Running
 - `npx react-native run-android` (this should automatically install the app directly on your device if you are connecting through USB, or else AVD will be opened)
