@@ -1,36 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View, Dimensions } from "react-native";
 import { Colors, DebugInstructions, Header, LearnMoreLinks, ReloadInstructions } from "react-native/Libraries/NewAppScreen";
 import NfcManager, { NfcTech, MifareClassicHandlerAndroid } from "react-native-nfc-manager";
-
-function Section({ children, title }) {
-    const isDarkMode = useColorScheme() === "dark";
-
-    return (
-        <View style={styles.sectionContainer}>
-            <Text
-                style={[
-                    styles.sectionTitle,
-                    {
-                        color: isDarkMode ? Colors.white : Colors.black,
-                    },
-                ]}
-            >
-                {title}
-            </Text>
-            <Text
-                style={[
-                    styles.sectionDescription,
-                    {
-                        color: isDarkMode ? Colors.light : Colors.dark,
-                    },
-                ]}
-            >
-                {children}
-            </Text>
-        </View>
-    );
-}
+import MainScreen from "./components/MainScreen";
 
 function App() {
     const isDarkMode = useColorScheme() === "dark";
@@ -101,50 +73,27 @@ function App() {
     }
 
     return (
+        // <SafeAreaView style={backgroundStyle}>
+        //     <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
+        //     <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
+        //         <View
+        //             style={{
+        //                 backgroundColor: isDarkMode ? Colors.black : Colors.white,
+        //             }}
+        //         >
+        //             <Text style={{ fontSize: 24, padding: 20 }}>Device supports NFC</Text>
+        //             <TouchableOpacity onPress={readTag}>
+        //                 <Text style={{ fontSize: 24, padding: 20, margin: 10 }}>Start scanning here</Text>
+        //             </TouchableOpacity>
+        //             <Text>{JSON.stringify(tagState)}</Text>
+        //         </View>
+        //     </ScrollView>
+        // </SafeAreaView>
         <SafeAreaView style={backgroundStyle}>
             <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
-            <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
-                <View
-                    style={{
-                        backgroundColor: isDarkMode ? Colors.black : Colors.white,
-                    }}
-                >
-                    <Text style={{ fontSize: 24, padding: 20 }}>Device supports NFC</Text>
-                    <TouchableOpacity onPress={readTag}>
-                        <Text style={{ fontSize: 24, padding: 20, margin: 10 }}>Start scanning here</Text>
-                    </TouchableOpacity>
-                    <Text>{JSON.stringify(tagState)}</Text>
-                </View>
-            </ScrollView>
+            <MainScreen />
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-    sectionContainer: {
-        marginTop: 32,
-        paddingHorizontal: 24,
-        flex: 1,
-        justifyContent: "center",
-        alignContent: "center",
-    },
-    sectionTitle: {
-        fontSize: 24,
-        fontWeight: "700",
-    },
-    sectionDescription: {
-        marginTop: 8,
-        fontSize: 18,
-        fontWeight: "400",
-    },
-    highlight: {
-        fontWeight: "700",
-    },
-    touchable: {
-        padding: 20,
-        width: 50,
-        height: 50,
-    },
-});
 
 export default App;
