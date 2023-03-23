@@ -11,18 +11,69 @@ const LockersList = () => {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
 
-    const listTitle = {
-        locker: "Lockers list",
-        pairing: "Pairing",
-        noti: "Notifications",
-    };
+    const data = [
+        {
+            type: "locker",
+            name: "12312329809138490102341461",
+            location: "yo grandma house",
+            lastAccess: "1677683725",
+        },
+        {
+            type: "locker",
+            name: "name",
+            location: "yo grandma house",
+            lastAccess: "1677683725",
+        },
+        {
+            type: "locker",
+            name: "name",
+            location: "yo grandma house",
+            lastAccess: "1677683725",
+        },
+        {
+            type: "locker",
+            name: "name",
+            location: "yo grandma house",
+            lastAccess: "1677683725",
+        },
+        {
+            type: "locker",
+            name: "name",
+            location: "yo grandma house",
+            lastAccess: "1677683725",
+        },
+        {
+            type: "locker",
+            name: "name",
+            location: "yo grandma house",
+            lastAccess: "1677683725",
+        },
+        {
+            type: "locker",
+            name: "name",
+            location: "yo grandma house",
+            lastAccess: "1677683725",
+        },
+        {
+            type: "locker",
+            name: "name",
+            location: "yo grandma house",
+            lastAccess: "1677683725",
+        },
+        {
+            type: "locker",
+            name: "name",
+            location: "yo grandma house",
+            lastAccess: "1677683725",
+        },
+    ];
 
     return (
         <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
             <User />
-            <ListView listTitle={listTitle.locker} />
+            <ListView listTitle="Lockers List" itemsList={data} />
         </ScrollView>
     );
 };
 
-export default LockersList
+export default LockersList;

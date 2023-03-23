@@ -6,6 +6,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaskedView from "@react-native-masked-view/masked-view";
 
 import LockersList from "./LockersList";
+import Pairing from "./Pairing";
+import Notifications from "./Notifications";
 
 const icons = {
     lockIcon: require("../static/secure.png"),
@@ -75,7 +77,7 @@ const MainScreen = () => {
                         ></Tab.Screen>
                         <Tab.Screen
                             name="Pairing"
-                            component={Dump}
+                            component={Pairing}
                             options={{
                                 headerStyle: {
                                     height: 0,
@@ -84,7 +86,7 @@ const MainScreen = () => {
                         ></Tab.Screen>
                         <Tab.Screen
                             name="Notifications"
-                            component={Dump}
+                            component={Notifications}
                             options={{
                                 headerStyle: {
                                     height: 0,
