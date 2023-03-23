@@ -1,0 +1,3 @@
+[submodule "smart-locker-backend"]
+	path = smart-locker-backend
+	url = https://github.com/nguyendhst/smart-locker-backend.git
