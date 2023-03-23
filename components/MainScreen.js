@@ -5,9 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import MaskedView from "@react-native-masked-view/masked-view";
 
-import Navbar from "./Navbar";
-import User from "./Header";
-import ListView from "./ListView";
+import LockersList from "./LockersList";
 
 const icons = {
     lockIcon: require("../static/secure.png"),
@@ -17,44 +15,7 @@ const Dump = () => {
     return <View></View>;
 };
 
-const LockersList = () => {
-    const isDarkMode = useColorScheme() === "dark";
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    };
-
-    const listTitle = {
-        locker: "Lockers list",
-        pairing: "Pairing",
-        noti: "Notifications",
-    };
-
-    return (
-        <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
-            <User />
-            <ListView listTitle={listTitle.locker} />
-        </ScrollView>
-    );
-};
-
 const Tab = createBottomTabNavigator();
-
-// const Nav = (props) => {
-//     return (
-//         <View style={{
-//             paddingTop: 5,
-//             paddingBottom: 5,
-//             paddingLeft: 20,
-//             paddingRight: 20,
-//             borderRadius: 100,
-//             backgroundColor: "#555555"
-//         }}>
-//             <MaskedView maskElement={<Image style={{ width: 20, height: 20 }} source={icons[props.name]} />}>
-//                 <View style={{ width: 20, height: 20, backgroundColor: "white" }}></View>
-//             </MaskedView>
-//         </View>
-//     );
-// };
 
 const Nav = (props) => {
     return (
