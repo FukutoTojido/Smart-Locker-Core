@@ -2,7 +2,7 @@
 React Native app for Smart Locker service
 
 ## Prerequisite
-- An Android device with **Developer options** unlocked and NFC 
+- An Android device with **Developer options** unlocked, **USB Debugging** turned on and NFC 
 - An **Android Virtual Device** through **Android Studio** / **Android Emulator** (no NFC functionality)
 
 ## Setup
