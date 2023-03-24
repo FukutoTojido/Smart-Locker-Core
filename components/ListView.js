@@ -1,28 +1,24 @@
 import React, { useState, useEffect, Fragment } from "react";
-import {
-    Image,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableHighlight,
-    TouchableOpacity,
-    useColorScheme,
-    ToastAndroid,
-    View,
-} from "react-native";
+import { Image, Text, TouchableOpacity, ToastAndroid, View } from "react-native";
+import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import MaskedView from "@react-native-masked-view/masked-view";
 
-const icons = {
-    locker: require("../static/secure.png"),
-    bluetooth: require("../static/bluetooth.png"),
-    nfc: require("../static/nfc-logo.png"),
-};
+import { icons } from "../App";
 
 const ListItem = (props) => {
+    const palette = useMaterialYouPalette();
+
     return (
-        <TouchableOpacity style={[styles.listItem, props.enabled !== false ? "" : styles.listItemDisabled]} onPress={() => {}}>
+        <TouchableOpacity
+            style={[
+                styles.listItem,
+                {
+                    borderColor: palette.system_accent2[2],
+                },
+                props.enabled !== false ? "" : styles.listItemDisabled,
+            ]}
+            onPress={() => {}}
+        >
             <MaskedView
                 maskElement={
                     <Image
@@ -39,19 +35,38 @@ const ListItem = (props) => {
                     />
                 }
             >
-                <View style={styles.listItemIcon}></View>
+                <View
+                    style={[
+                        styles.listItemIcon,
+                        {
+                            backgroundColor: palette.system_accent2[2],
+                        },
+                    ]}
+                ></View>
             </MaskedView>
             <View style={styles.listItemDetail}>
-                <Text style={styles.listItemHeader} numberOfLines={1}>
-                    {props.name}
+                <Text
+                    style={[
+                        styles.listItemHeader,
+                        {
+                            color: palette.system_accent2[2],
+                        },
+                    ]}
+                    numberOfLines={1}
+                >
+                    {props.type === "locker" ? `Locker: ${props.name}` : props.name}
                 </Text>
                 {props.type === "locker" ? (
                     <>
-                        <Text style={styles.listItemText}>Location: {props.location}</Text>
-                        {props.lastAccess !== undefined ? <Text style={styles.listItemText}>Last access: {props.lastAccess}</Text> : ""}
+                        <Text style={[styles.listItemText, { color: palette.system_accent2[4] }]}>Location: {props.location}</Text>
+                        {props.lastAccess !== undefined ? (
+                            <Text style={[styles.listItemText, { color: palette.system_accent2[4] }]}>Last access: {props.lastAccess}</Text>
+                        ) : (
+                            ""
+                        )}
                     </>
                 ) : props.type === "pairing" ? (
-                    <Text style={styles.listItemText}>{props.desc}</Text>
+                    <Text style={[styles.listItemText, { color: palette.system_accent2[4] }]}>{props.desc}</Text>
                 ) : (
                     ""
                 )}
@@ -61,9 +76,11 @@ const ListItem = (props) => {
 };
 
 const ListView = (props) => {
+    const palette = useMaterialYouPalette();
+
     return (
         <View style={styles.list}>
-            <Text style={styles.listTitle}>{props.listTitle}</Text>
+            <Text style={[styles.listTitle, { color: palette.system_accent2[2] }]}>{props.listTitle}</Text>
             {props.itemsList.map((item, idx) => (
                 <ListItem
                     key={idx}
@@ -96,7 +113,6 @@ const styles = {
         width: "100%",
         height: 100,
         padding: 20,
-        borderColor: "white",
         borderStyle: "solid",
         borderWidth: 2,
         borderRadius: 15,
@@ -114,19 +130,16 @@ const styles = {
     listItemIcon: {
         width: 30,
         height: 30,
-        backgroundColor: "white",
     },
     listItemDetail: {
         width: 284,
         height: "100%",
-        // backgroundColor: "white",
         flex: 1,
         justifyContent: "center",
     },
     listItemHeader: {
         fontWeight: 700,
         fontSize: 20,
-        color: "white",
     },
     listItemText: {
         fontWeight: 500,

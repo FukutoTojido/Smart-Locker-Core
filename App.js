@@ -2,7 +2,26 @@ import React, { useState, useEffect } from "react";
 import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View, Dimensions } from "react-native";
 import { Colors, DebugInstructions, Header, LearnMoreLinks, ReloadInstructions } from "react-native/Libraries/NewAppScreen";
 import NfcManager, { NfcTech, MifareClassicHandlerAndroid } from "react-native-nfc-manager";
+import { MaterialYouService, useMaterialYouPalette, defaultPalette } from "@assembless/react-native-material-you";
+
 import MainScreen from "./components/MainScreen";
+import ColorTest from "./components/Test/Color";
+
+const icons = {
+    locker: require("./static/secure.png"),
+    bluetooth: require("./static/bluetooth.png"),
+    nfc: require("./static/nfc-logo.png"),
+    pairing: require("./static/pairing.png"),
+    notification: require("./static/notification.png"),
+};
+
+const Color = {
+    background0: "#161616",
+    background1: "#282828",
+    accent1: "#ffffff",
+    accent2: "#888888",
+    accent3: "#555555",
+};
 
 function App() {
     const isDarkMode = useColorScheme() === "dark";
@@ -89,11 +108,15 @@ function App() {
         //         </View>
         //     </ScrollView>
         // </SafeAreaView>
-        <SafeAreaView style={backgroundStyle}>
-            <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
-            <MainScreen />
-        </SafeAreaView>
+        <MaterialYouService fallbackPalette={defaultPalette}>
+            <SafeAreaView style={backgroundStyle}>
+                <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
+                <MainScreen />
+                {/* <ColorTest /> */}
+            </SafeAreaView>
+        </MaterialYouService>
     );
 }
 
 export default App;
+export { icons, Color };

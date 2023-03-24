@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import { Colors, DebugInstructions, Header, LearnMoreLinks, ReloadInstructions } from "react-native/Libraries/NewAppScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import MaskedView from "@react-native-masked-view/masked-view";
 
 import LockersList from "./LockersList";
 import Pairing from "./Pairing";
 import Notifications from "./Notifications";
 
-const icons = {
-    lockIcon: require("../static/secure.png"),
-};
+import { icons, Color } from "../App";
+import User from "./Header";
 
 const Dump = () => {
     return <View></View>;
@@ -20,31 +19,61 @@ const Dump = () => {
 const Tab = createBottomTabNavigator();
 
 const Nav = (props) => {
+    // Background: Accent2 - 11
+    // Background2: Accent2 - 10
+    // Mid: Accent2 - 4
+    // Highlight: Accent2 - 2
+    const palette = useMaterialYouPalette();
+
     return (
         <View style={styles.nav}>
             <View
                 style={{
                     paddingTop: 5,
                     paddingBottom: 5,
-                    paddingLeft: 20,
-                    paddingRight: 20,
+                    paddingLeft: 10,
+                    paddingRight: 10,
                     borderRadius: 100,
-                    backgroundColor: props.isFocused ? "#555555" : "",
+                    backgroundColor: props.isFocused ? palette.system_accent2[9] : "",
                 }}
             >
-                <MaskedView maskElement={<Image style={{ width: 20, height: 20 }} source={icons[props.img]} />}>
-                    <View style={{ width: 20, height: 20, backgroundColor: "white" }}></View>
+                <MaskedView
+                    maskElement={
+                        <Image
+                            style={{ width: 60, height: 25 }}
+                            resizeMode={"contain"}
+                            source={props.name === "Lockers List" ? icons.locker : props.name === "Pairing" ? icons.pairing : icons.notification}
+                        />
+                    }
+                >
+                    <View
+                        style={{ width: 60, height: 25, backgroundColor: props.isFocused ? palette.system_accent2[2] : palette.system_accent2[4] }}
+                    ></View>
                 </MaskedView>
             </View>
-            <Text style={{ textAlign: "center", fontWeight: props.isFocused ? 700 : 500 }}>{props.name}</Text>
+            <Text
+                style={{
+                    fontSize: 18,
+                    textAlign: "center",
+                    fontWeight: props.isFocused ? 700 : 500,
+                    color: props.isFocused ? palette.system_accent2[2] : palette.system_accent2[4],
+                }}
+            >
+                {props.name}
+            </Text>
         </View>
     );
 };
 
 const MainScreen = () => {
-    const isDarkMode = useColorScheme() === "dark";
+    // Background: Accent2 - 11
+    // Background2: Accent2 - 10
+    // Mid: Accent2 - 4
+    // Highlight: Accent2 - 2
+    const palette = useMaterialYouPalette();
+
     const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+        backgroundColor: palette.system_accent2[11],
     };
 
     return (
@@ -55,12 +84,15 @@ const MainScreen = () => {
                         screenOptions={({ route }) => ({
                             tabBarIcon: ({ focused, color, size }) => {
                                 // console.log(route.name);
-                                return <Nav name={route.name} img="lockIcon" isFocused={focused} />;
+                                return <Nav name={route.name} img="locker" isFocused={focused} />;
                             },
                             tabBarStyle: {
-                                height: 70,
-                                backgroundColor: "#323232",
+                                height: 100,
+                                backgroundColor: palette.system_accent2[10],
                                 borderTopWidth: 0,
+                                borderTopLeftRadius: 10,
+                                borderTopRightRadius: 10,
+
                             },
                             tabBarShowLabel: false,
                             tabBarButton: (props) => <TouchableOpacity {...props}></TouchableOpacity>,
@@ -95,7 +127,6 @@ const MainScreen = () => {
                         ></Tab.Screen>
                     </Tab.Navigator>
                 </NavigationContainer>
-                {/* <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} /> */}
             </View>
         </ScrollView>
     );

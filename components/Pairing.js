@@ -1,16 +1,18 @@
 import React from "react";
-import { Colors } from "react-native/Libraries/NewAppScreen";
-import { ScrollView, useColorScheme } from "react-native";
+import { useMaterialYouPalette } from "@assembless/react-native-material-you";
+import { ScrollView } from "react-native";
 
 import User from "./Header";
 import ListView from "./ListView";
 
-const Pairing = () => {
-    const isDarkMode = useColorScheme() === "dark";
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    };
 
+const Pairing = () => {
+    const palette = useMaterialYouPalette();
+
+    const backgroundStyle = {
+        backgroundColor: palette.system_accent2[11],
+    };
+    
     const data = [
         {
             type: "pairing",
