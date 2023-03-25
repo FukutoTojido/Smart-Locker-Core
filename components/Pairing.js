@@ -5,14 +5,13 @@ import { ScrollView } from "react-native";
 import User from "./Header";
 import ListView from "./ListView";
 
-
-const Pairing = () => {
+const Pairing = ({ navigation }) => {
     const palette = useMaterialYouPalette();
 
     const backgroundStyle = {
         backgroundColor: palette.system_accent2[11],
     };
-    
+
     const data = [
         {
             type: "pairing",
@@ -20,6 +19,7 @@ const Pairing = () => {
             name: "Bluetooth",
             desc: "Use Bluetooth to search for nearby lockers",
             enabled: true,
+            navName: "Test"
         },
         {
             type: "pairing",
@@ -27,6 +27,7 @@ const Pairing = () => {
             name: "NFC",
             desc: "Put your device at the door of the locker you want to use",
             enabled: true,
+            navName: "Test"
         },
         {
             type: "pairing",

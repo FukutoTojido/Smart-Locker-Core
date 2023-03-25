@@ -8,6 +8,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import LockersList from "./LockersList";
 import Pairing from "./Pairing";
 import Notifications from "./Notifications";
+import Images from "../static/Images";
 
 import { icons, Color } from "../App";
 import User from "./Header";
@@ -25,6 +26,8 @@ const Nav = (props) => {
     // Highlight: Accent2 - 2
     const palette = useMaterialYouPalette();
 
+    const navIcon = props.name === "Lockers List" ? Images.locker : props.name === "Pairing" ? Images.pairing : Images.notification;
+
     return (
         <View style={styles.nav}>
             <View
@@ -37,15 +40,7 @@ const Nav = (props) => {
                     backgroundColor: props.isFocused ? palette.system_accent2[9] : "",
                 }}
             >
-                <MaskedView
-                    maskElement={
-                        <Image
-                            style={{ width: 60, height: 25 }}
-                            resizeMode={"contain"}
-                            source={props.name === "Lockers List" ? icons.locker : props.name === "Pairing" ? icons.pairing : icons.notification}
-                        />
-                    }
-                >
+                <MaskedView maskElement={<Image style={{ width: 60, height: 25 }} resizeMode={"contain"} source={navIcon} />}>
                     <View
                         style={{ width: 60, height: 25, backgroundColor: props.isFocused ? palette.system_accent2[2] : palette.system_accent2[4] }}
                     ></View>
@@ -65,7 +60,7 @@ const Nav = (props) => {
     );
 };
 
-const MainScreen = () => {
+const MainScreen = ({ navigation }) => {
     // Background: Accent2 - 11
     // Background2: Accent2 - 10
     // Mid: Accent2 - 4
@@ -79,54 +74,53 @@ const MainScreen = () => {
     return (
         <ScrollView contentContainerStyle={{ height: "100%" }} contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
             <View style={styles.container}>
-                <NavigationContainer>
-                    <Tab.Navigator
-                        screenOptions={({ route }) => ({
-                            tabBarIcon: ({ focused, color, size }) => {
-                                // console.log(route.name);
-                                return <Nav name={route.name} img="locker" isFocused={focused} />;
+                {/* <NavigationContainer> */}
+                <Tab.Navigator
+                    screenOptions={({ route }) => ({
+                        tabBarIcon: ({ focused, color, size }) => {
+                            // console.log(route.name);
+                            return <Nav name={route.name} img="locker" isFocused={focused} />;
+                        },
+                        tabBarStyle: {
+                            height: 100,
+                            backgroundColor: palette.system_accent2[10],
+                            borderTopWidth: 0,
+                            borderTopLeftRadius: 10,
+                            borderTopRightRadius: 10,
+                        },
+                        tabBarShowLabel: false,
+                        tabBarButton: (props) => <TouchableOpacity {...props}></TouchableOpacity>,
+                    })}
+                >
+                    <Tab.Screen
+                        name="Lockers List"
+                        component={LockersList}
+                        options={{
+                            headerStyle: {
+                                height: 0,
                             },
-                            tabBarStyle: {
-                                height: 100,
-                                backgroundColor: palette.system_accent2[10],
-                                borderTopWidth: 0,
-                                borderTopLeftRadius: 10,
-                                borderTopRightRadius: 10,
-
+                        }}
+                    ></Tab.Screen>
+                    <Tab.Screen
+                        name="Pairing"
+                        component={Pairing}
+                        options={{
+                            headerStyle: {
+                                height: 0,
                             },
-                            tabBarShowLabel: false,
-                            tabBarButton: (props) => <TouchableOpacity {...props}></TouchableOpacity>,
-                        })}
-                    >
-                        <Tab.Screen
-                            name="Lockers List"
-                            component={LockersList}
-                            options={{
-                                headerStyle: {
-                                    height: 0,
-                                },
-                            }}
-                        ></Tab.Screen>
-                        <Tab.Screen
-                            name="Pairing"
-                            component={Pairing}
-                            options={{
-                                headerStyle: {
-                                    height: 0,
-                                },
-                            }}
-                        ></Tab.Screen>
-                        <Tab.Screen
-                            name="Notifications"
-                            component={Notifications}
-                            options={{
-                                headerStyle: {
-                                    height: 0,
-                                },
-                            }}
-                        ></Tab.Screen>
-                    </Tab.Navigator>
-                </NavigationContainer>
+                        }}
+                    ></Tab.Screen>
+                    <Tab.Screen
+                        name="Notifications"
+                        component={Notifications}
+                        options={{
+                            headerStyle: {
+                                height: 0,
+                            },
+                        }}
+                    ></Tab.Screen>
+                </Tab.Navigator>
+                {/* </NavigationContainer> */}
             </View>
         </ScrollView>
     );
