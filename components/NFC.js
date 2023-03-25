@@ -1,0 +1,88 @@
+import NfcManager, { NfcTech, MifareClassicHandlerAndroid } from "react-native-nfc-manager";
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View, Dimensions } from "react-native";
+import React, { useState, useEffect } from "react";
+
+const NFC = () => {
+    const [hasNfc, setHasNFC] = useState(null);
+    const [tagState, setTagState] = useState("");
+
+    const readTag = async () => {
+        try {
+            const sectorZeroData = [];
+            await NfcManager.requestTechnology(NfcTech.MifareClassic);
+
+            await NfcManager.mifareClassicHandlerAndroid.mifareClassicAuthenticateA(0, [0x60, 0x90, 0xd0, 0x06, 0x32, 0xf5]);
+
+            for (let i = 0; i < 4; i++) {
+                const blockData = (await NfcManager.mifareClassicHandlerAndroid.mifareClassicReadBlock(i))
+                    .map((byte) => byte.toString(16).padStart(2, "0").toUpperCase())
+                    .join(" ");
+
+                sectorZeroData.push(blockData);
+            }
+
+            console.log(`MiFARE Classic 1K found: `);
+            sectorZeroData.forEach((block, idx) => {
+                console.log(`\tBlock ${idx}: ${block}`);
+            });
+
+            setTagState(JSON.stringify(sectorZeroData));
+        } catch (ex) {
+            // console.warn("Oops!", ex);
+            setTagState(JSON.stringify(ex));
+        } finally {
+            NfcManager.cancelTechnologyRequest();
+        }
+    };
+
+    useEffect(() => {
+        const checkIsSupported = async () => {
+            const deviceIsSupported = await NfcManager.isSupported();
+
+            setHasNFC(deviceIsSupported);
+            if (deviceIsSupported) {
+                await NfcManager.start();
+            }
+        };
+
+        checkIsSupported();
+    }, []);
+
+    if (!hasNfc) {
+        return (
+            <SafeAreaView style={backgroundStyle}>
+                <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
+                <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
+                    <View
+                        style={{
+                            backgroundColor: isDarkMode ? Colors.black : Colors.white,
+                        }}
+                    >
+                        <Text style={{ fontSize: 24, padding: 20 }}>Device does not support NFC</Text>
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+        );
+    }
+
+    return (
+        <SafeAreaView style={backgroundStyle}>
+            <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
+            <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
+                <View
+                    style={{
+                        backgroundColor: isDarkMode ? Colors.black : Colors.white,
+                    }}
+                >
+                    <Text style={{ fontSize: 24, padding: 20 }}>Device supports NFC</Text>
+                    <TouchableOpacity onPress={readTag}>
+                        <Text style={{ fontSize: 24, padding: 20, margin: 10 }}>Start scanning here</Text>
+                    </TouchableOpacity>
+                    <Text>{JSON.stringify(tagState)}</Text>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
+    );
+};
+
+export default NFC

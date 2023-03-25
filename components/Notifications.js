@@ -28,20 +28,7 @@ const Notifications = () => {
     return (
         <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
             <User />
-            {/* <ListView listTitle="Notifications" itemsList={data}/> */}
-            <Stack.Navigator
-                screenOptions={{
-                    title: "Hello",
-                    cardOverlayEnabled: true,
-                    cardStyle: {
-                        backgroundColor: "red",
-                    },
-                }}
-            >
-                <Stack.Screen name="Test1" component={Dump} />
-                <Stack.Screen name="Test2" component={Dump} />
-                <Stack.Screen name="Test3" component={Dump} />
-            </Stack.Navigator>
+            <ListView listTitle="Notifications" itemsList={data}/>
         </ScrollView>
     );
 };

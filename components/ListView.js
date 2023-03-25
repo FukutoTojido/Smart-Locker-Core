@@ -2,11 +2,13 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Image, Text, TouchableOpacity, ToastAndroid, View } from "react-native";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import MaskedView from "@react-native-masked-view/masked-view";
+import { useNavigation } from '@react-navigation/native';
 
 import { icons } from "../App";
 
 const ListItem = (props) => {
     const palette = useMaterialYouPalette();
+    const navigation = useNavigation()
 
     return (
         <TouchableOpacity
@@ -17,7 +19,9 @@ const ListItem = (props) => {
                 },
                 props.enabled !== false ? "" : styles.listItemDisabled,
             ]}
-            onPress={() => {}}
+            onPress={() => {
+                if (props.enabled) navigation.navigate(props.navName);
+            }}
         >
             <MaskedView
                 maskElement={
@@ -91,6 +95,7 @@ const ListView = (props) => {
                     mode={item.mode}
                     desc={item.desc}
                     enabled={item.enabled}
+                    navName={item.navName}
                 />
             ))}
         </View>
