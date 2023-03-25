@@ -18,7 +18,7 @@ React Native app for Smart Locker service
 - `npx react-native run-android` (this should automatically install the app directly on your device if you are connecting through USB, or else AVD will be opened)
 
 
-### MacOS and Android Debugging
+### Android Debugging Steps
 - Enable **USB Debugging** on your Android device
 - Connect your Android device to your Mac through USB
 - Run `adb devices` to check if your device is connected
