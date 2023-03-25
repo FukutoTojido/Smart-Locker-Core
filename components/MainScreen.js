@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, StatusBar, useColorScheme, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
@@ -73,6 +73,7 @@ const MainScreen = ({ navigation }) => {
 
     return (
         <ScrollView contentContainerStyle={{ height: "100%" }} contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
+            <StatusBar barStyle="light-content" backgroundColor={backgroundStyle.backgroundColor} />
             <View style={styles.container}>
                 {/* <NavigationContainer> */}
                 <Tab.Navigator

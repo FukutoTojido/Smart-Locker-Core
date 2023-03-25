@@ -4,4 +4,5 @@ export default {
     nfc: require("./nfc-logo.png"),
     pairing: require("./pairing.png"),
     notification: require("./notification.png"),
-}
+    back: require("./left-arrow.png"),
+};

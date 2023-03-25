@@ -27,7 +27,7 @@ const Pairing = ({ navigation }) => {
             name: "NFC",
             desc: "Put your device at the door of the locker you want to use",
             enabled: true,
-            navName: "Test"
+            navName: "NFC"
         },
         {
             type: "pairing",
