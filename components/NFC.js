@@ -113,7 +113,7 @@ const NFC = () => {
                                     borderRadius: 20,
                                     borderStyle: "solid",
                                     borderWidth: 2,
-                                    borderColor: palette.system_accent2[4]
+                                    borderColor: palette.system_accent2[4],
                                 }}
                             >
                                 {tagState.map((sector, idx) => (

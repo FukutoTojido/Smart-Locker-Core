@@ -10,7 +10,7 @@ import NfcManager from "react-native-nfc-manager";
 import MainScreen from "./components/MainScreen";
 import ColorTest from "./components/Test/Color";
 import NFC from "./components/NFC";
-import Images from "./static/Images";
+import Images, { prefetchImage } from "./static/Images";
 
 const icons = {
     locker: require("./static/secure.png"),
@@ -37,7 +37,7 @@ const CustomBackButton = () => {
         <TouchableOpacity
             style={{
                 // backgroundColor: "white",
-                paddingHorizontal: 30
+                paddingHorizontal: 30,
             }}
             onPress={() => {
                 NfcManager.cancelTechnologyRequest();
@@ -60,6 +60,12 @@ const CustomBackButton = () => {
 function App() {
     const isDarkMode = useColorScheme() === "dark";
     const { palette } = useMaterialYou({ fallbackPalette: defaultPalette });
+    const [prefetchedAll, setPrefetchedAll] = useState(false);
+
+    useEffect(() => {
+        const res = prefetchImage();
+        setPrefetchedAll(res);
+    }, []);
 
     const backgroundStyle = {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -69,7 +75,7 @@ function App() {
         <>
             <NavigationContainer>
                 <MaterialYouService fallbackPalette={defaultPalette}>
-                    <SafeAreaView style={[backgroundStyle, { flex: 1 }]}>
+                    <SafeAreaView style={[backgroundStyle, { flex: 1 }]} key={prefetchedAll}>
                         <Stack.Navigator>
                             <Stack.Screen
                                 name="MainScreen"
