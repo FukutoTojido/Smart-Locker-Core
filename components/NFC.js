@@ -48,11 +48,11 @@ const NFC = () => {
     };
 
     useEffect(() => {
-        const checkIsSupported = async () => {
-            const deviceIsSupported = await NfcManager.isSupported();
+        const startNFC = async () => {
+            // const deviceIsSupported = await NfcManager.isSupported();
 
-            setHasNFC(deviceIsSupported);
-            if (deviceIsSupported) {
+            // setHasNFC(deviceIsSupported);
+            // if (NFC_SUPPORTED) {
                 await NfcManager.start();
 
                 if (!(await NfcManager.isEnabled())) {
@@ -61,24 +61,24 @@ const NFC = () => {
                     setEnabledState(true);
                     await readTag();
                 }
-            }
+            // }
         };
 
-        checkIsSupported();
+        startNFC();
     }, []);
 
-    if (!hasNfc) {
-        return (
-            <SafeAreaView style={backgroundStyle}>
-                <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
-                <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
-                    <View style={backgroundStyle}>
-                        <Text style={{ fontSize: 24, padding: 20 }}>Device does not support NFC</Text>
-                    </View>
-                </ScrollView>
-            </SafeAreaView>
-        );
-    }
+    // if (!hasNfc) {
+    //     return (
+    //         <SafeAreaView style={backgroundStyle}>
+    //             <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
+    //             <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
+    //                 <View style={backgroundStyle}>
+    //                     <Text style={{ fontSize: 24, padding: 20 }}>Device does not support NFC</Text>
+    //                 </View>
+    //             </ScrollView>
+    //         </SafeAreaView>
+    //     );
+    // }
 
     return (
         <SafeAreaView style={([backgroundStyle], { flex: 1 })}>

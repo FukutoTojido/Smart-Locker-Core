@@ -4,6 +4,7 @@ import { ScrollView } from "react-native";
 
 import User from "./Header";
 import ListView from "./ListView";
+import { NFC_SUPPORTED } from "../App";
 
 const Pairing = ({ navigation }) => {
     const palette = useMaterialYouPalette();
@@ -26,16 +27,16 @@ const Pairing = ({ navigation }) => {
             mode: "nfc",
             name: "NFC",
             desc: "Put your device at the door of the locker you want to use",
-            enabled: true,
+            enabled: NFC_SUPPORTED,
             navName: "NFC"
         },
-        {
-            type: "pairing",
-            mode: "nfc",
-            name: "NFC",
-            desc: "Your device does not support NFC technology",
-            enabled: false,
-        },
+        // {
+        //     type: "pairing",
+        //     mode: "nfc",
+        //     name: "NFC",
+        //     desc: "Your device does not support NFC technology",
+        //     enabled: false,
+        // },
     ];
 
     return (

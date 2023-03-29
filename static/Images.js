@@ -12,7 +12,7 @@ const imageObj = {
 const prefetchImage = async () => {
     for (const img in imageObj) {
         await Image.prefetch(Image.resolveAssetSource(imageObj[img]).uri);
-        console.log(img);
+        // console.log(img);
     }
 
     return true;

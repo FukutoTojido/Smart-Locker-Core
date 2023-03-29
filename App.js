@@ -30,6 +30,8 @@ const Dump = () => {
     );
 };
 
+let NFC_SUPPORTED = false;
+
 const CustomBackButton = () => {
     const { palette } = useMaterialYou({ fallbackPalette: defaultPalette });
     const { goBack } = useNavigation();
@@ -65,6 +67,13 @@ function App() {
     useEffect(() => {
         const res = prefetchImage();
         setPrefetchedAll(res);
+
+        const checkNFC = async () => {
+            const res = await NfcManager.isSupported();
+            NFC_SUPPORTED = res;
+        };        
+
+        checkNFC();
     }, []);
 
     const backgroundStyle = {
@@ -111,4 +120,4 @@ function App() {
 }
 
 export default App;
-export { icons };
+export { icons, NFC_SUPPORTED };
