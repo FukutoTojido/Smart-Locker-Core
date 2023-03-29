@@ -11,6 +11,9 @@ import MainScreen from "./components/MainScreen";
 import ColorTest from "./components/Test/Color";
 import NFC from "./components/NFC";
 import Images, { prefetchImage } from "./static/Images";
+import Setup from "./components/Setup";
+import Locker from "./components/Locker";
+import Pairing from "./components/Pairing";
 
 const icons = {
     locker: require("./static/secure.png"),
@@ -32,9 +35,9 @@ const Dump = () => {
 
 let NFC_SUPPORTED = false;
 
-const CustomBackButton = () => {
+const CustomBackButton = (props) => {
     const { palette } = useMaterialYou({ fallbackPalette: defaultPalette });
-    const { goBack } = useNavigation();
+    const { goBack, reset } = useNavigation();
     return (
         <TouchableOpacity
             style={{
@@ -43,7 +46,16 @@ const CustomBackButton = () => {
             }}
             onPress={() => {
                 NfcManager.cancelTechnologyRequest();
-                goBack();
+                if (props.goHome)
+                    reset({
+                        index: 0,
+                        routes: [
+                            {
+                                name: "MainScreen",
+                            },
+                        ],
+                    });
+                else goBack();
             }}
         >
             <MaskedView maskElement={<Image style={{ width: 30, height: 30 }} resizeMode={"contain"} source={Images.back} />}>
@@ -65,13 +77,17 @@ function App() {
     const [prefetchedAll, setPrefetchedAll] = useState(false);
 
     useEffect(() => {
-        const res = prefetchImage();
-        setPrefetchedAll(res);
+        const waitPrefetchAll = async () => {
+            const res = await prefetchImage();
+            setPrefetchedAll(res);
+        };
+
+        waitPrefetchAll();
 
         const checkNFC = async () => {
             const res = await NfcManager.isSupported();
             NFC_SUPPORTED = res;
-        };        
+        };
 
         checkNFC();
     }, []);
@@ -97,6 +113,48 @@ function App() {
                             <Stack.Screen
                                 name="NFC"
                                 component={NFC}
+                                options={{
+                                    headerTitle: "",
+                                    headerStyle: {
+                                        height: 90,
+                                        backgroundColor: palette.system_accent2[11],
+                                        elevation: 0,
+                                    },
+                                    headerTransparent: true,
+                                    headerLeft: () => <CustomBackButton />,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="Setup"
+                                component={Setup}
+                                options={{
+                                    headerTitle: "",
+                                    headerStyle: {
+                                        height: 90,
+                                        backgroundColor: palette.system_accent2[11],
+                                        elevation: 0,
+                                    },
+                                    headerTransparent: true,
+                                    headerLeft: () => <CustomBackButton goHome={true} />,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="Locker"
+                                component={Locker}
+                                options={{
+                                    headerTitle: "",
+                                    headerStyle: {
+                                        height: 90,
+                                        backgroundColor: palette.system_accent2[11],
+                                        elevation: 0,
+                                    },
+                                    headerTransparent: true,
+                                    headerLeft: () => <CustomBackButton />,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="Unlock"
+                                component={Pairing}
                                 options={{
                                     headerTitle: "",
                                     headerStyle: {

@@ -8,7 +8,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import LockersList from "./LockersList";
 import Pairing from "./Pairing";
 import Notifications from "./Notifications";
-import Images from "../static/Images";
+import Images, { prefetchImage } from "../static/Images";
 
 import { icons, Color } from "../App";
 import User from "./Header";
@@ -66,15 +66,25 @@ const MainScreen = ({ navigation }) => {
     // Mid: Accent2 - 4
     // Highlight: Accent2 - 2
     const palette = useMaterialYouPalette();
+    const [prefetchedAll, setPrefetchedAll] = useState(false);
 
     const backgroundStyle = {
         backgroundColor: palette.system_accent2[11],
     };
 
+    useEffect(() => {
+        const waitPrefetchAll = async () => {
+            const res = await prefetchImage();
+            setPrefetchedAll(res);
+        };
+
+        waitPrefetchAll();
+    }, []);
+
     return (
         <ScrollView contentContainerStyle={{ height: "100%" }} contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
             <StatusBar barStyle="light-content" backgroundColor={backgroundStyle.backgroundColor} />
-            <View style={styles.container}>
+            <View style={styles.container} key={prefetchedAll}>
                 {/* <NavigationContainer> */}
                 <Tab.Navigator
                     screenOptions={({ route }) => ({

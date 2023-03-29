@@ -3,8 +3,7 @@ import { Image, Text, TouchableOpacity, ToastAndroid, View } from "react-native"
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { useNavigation } from "@react-navigation/native";
-
-import { icons } from "../App";
+import Images, { prefetchImage } from "../static/Images";
 
 const ListItem = (props) => {
     const palette = useMaterialYouPalette();
@@ -29,11 +28,11 @@ const ListItem = (props) => {
                         style={{ width: 30, height: 30 }}
                         source={
                             props.type === "locker"
-                                ? icons.locker
+                                ? Images.locker
                                 : props.mode === "bluetooth"
-                                ? icons.bluetooth
+                                ? Images.bluetooth
                                 : props.mode === "nfc"
-                                ? icons.nfc
+                                ? Images.nfc
                                 : ""
                         }
                     />
@@ -81,9 +80,19 @@ const ListItem = (props) => {
 
 const ListView = (props) => {
     const palette = useMaterialYouPalette();
+    const [prefetchedAll, setPrefetchedAll] = useState(false);
+
+    useEffect(() => {
+        const waitPrefetchAll = async () => {
+            const res = await prefetchImage();
+            setPrefetchedAll(res);
+        };
+
+        waitPrefetchAll();
+    }, []);
 
     return (
-        <View style={styles.list}>
+        <View style={styles.list} key={prefetchedAll}>
             <Text style={[styles.listTitle, { color: palette.system_accent2[2] }]}>{props.listTitle}</Text>
             {props.itemsList.map((item, idx) => (
                 <ListItem
@@ -108,7 +117,7 @@ const styles = {
         paddingTop: 10,
         flex: 1,
         flexDirection: "column",
-        gap: 15,
+        gap: 20,
     },
     listTitle: {
         fontSize: 48,

@@ -6,8 +6,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 
 import Images from "../static/Images";
 
-const NFC = () => {
-    const [hasNfc, setHasNFC] = useState(null);
+const NFC = ({ navigation }) => {
     const [enabledState, setEnabledState] = useState(true);
     const [tagState, setTagState] = useState([]);
 
@@ -39,6 +38,7 @@ const NFC = () => {
             });
 
             setTagState(sectorZeroData);
+            navigation.navigate("Setup");
         } catch (ex) {
             console.log("Oops!", ex);
             // setTagState(JSON.stringify(ex));
@@ -49,36 +49,18 @@ const NFC = () => {
 
     useEffect(() => {
         const startNFC = async () => {
-            // const deviceIsSupported = await NfcManager.isSupported();
+            await NfcManager.start();
 
-            // setHasNFC(deviceIsSupported);
-            // if (NFC_SUPPORTED) {
-                await NfcManager.start();
-
-                if (!(await NfcManager.isEnabled())) {
-                    setEnabledState(false);
-                } else {
-                    setEnabledState(true);
-                    await readTag();
-                }
-            // }
+            if (!(await NfcManager.isEnabled())) {
+                setEnabledState(false);
+            } else {
+                setEnabledState(true);
+                await readTag();
+            }
         };
 
         startNFC();
     }, []);
-
-    // if (!hasNfc) {
-    //     return (
-    //         <SafeAreaView style={backgroundStyle}>
-    //             <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
-    //             <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
-    //                 <View style={backgroundStyle}>
-    //                     <Text style={{ fontSize: 24, padding: 20 }}>Device does not support NFC</Text>
-    //                 </View>
-    //             </ScrollView>
-    //         </SafeAreaView>
-    //     );
-    // }
 
     return (
         <SafeAreaView style={([backgroundStyle], { flex: 1 })}>
@@ -106,7 +88,7 @@ const NFC = () => {
                             >
                                 Please put your device at the locker's door
                             </Text>
-                            <View
+                            {/* <View
                                 style={{
                                     margin: 20,
                                     padding: 20,
@@ -130,7 +112,7 @@ const NFC = () => {
                                         {sector}
                                     </Text>
                                 ))}
-                            </View>
+                            </View> */}
                         </>
                     ) : (
                         <>
