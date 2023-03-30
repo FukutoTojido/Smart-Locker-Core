@@ -8,16 +8,6 @@ import Images, { prefetchImage } from "../static/Images";
 const User = () => {
     const palette = useMaterialYouPalette();
     const navigation = useNavigation();
-    const [prefetchedAll, setPrefetchedAll] = useState(false);
-
-    useEffect(() => {
-        const waitPrefetchAll = async () => {
-            const res = await prefetchImage();
-            setPrefetchedAll(res);
-        };
-
-        waitPrefetchAll();
-    }, []);
 
     return (
         <View style={styles.header}>

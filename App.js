@@ -6,9 +6,10 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import MaskedView from "@react-native-masked-view/masked-view";
 import NfcManager from "react-native-nfc-manager";
-import { Alert } from 'react-native';
-import messaging from '@react-native-firebase/messaging';
+import { Alert } from "react-native";
+import messaging from "@react-native-firebase/messaging";
 
+import StartScreen from "./components/StartScreen";
 import MainScreen from "./components/MainScreen";
 import ColorTest from "./components/Test/Color";
 import NFC from "./components/NFC";
@@ -99,19 +100,20 @@ function App() {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
 
-	useEffect(() => {
+    useEffect(() => {
+        // subscribe to topic
+        messaging()
+            .subscribeToTopic("alert")
+            .then(() => {
+                console.log(`Subscribed to alert`);
+            });
 
-		// subscribe to topic
-		messaging().subscribeToTopic("alert").then(() => {
-			console.log(`Subscribed to alert`)
-		})
+        const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+            Alert.alert(JSON.stringify(remoteMessage));
+        });
 
-		const unsubscribe = messaging().onMessage(async remoteMessage => {
-		  Alert.alert(JSON.stringify(remoteMessage));
-		});
-	
-		return unsubscribe;
-	}, []);
+        return unsubscribe;
+    }, []);
 
     return (
         <>
@@ -119,6 +121,13 @@ function App() {
                 <MaterialYouService fallbackPalette={defaultPalette}>
                     <SafeAreaView style={[backgroundStyle, { flex: 1 }]} key={prefetchedAll}>
                         <Stack.Navigator>
+                            <Stack.Screen
+                                name="Start Screen"
+                                component={StartScreen}
+                                options={{
+                                    headerShown: false,
+                                }}
+                            />
                             <Stack.Screen
                                 name="MainScreen"
                                 component={MainScreen}

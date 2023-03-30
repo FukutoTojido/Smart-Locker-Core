@@ -8,6 +8,7 @@ const imageObj = {
     notification: require("./notification.png"),
     back: require("./left-arrow.png"),
     julie: require("./julietemp.png"),
+    logo: require("./Logo.png"),
 };
 
 const prefetchImage = async () => {

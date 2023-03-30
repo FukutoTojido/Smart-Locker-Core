@@ -18,17 +18,6 @@ const User = ({ navigation }) => {
         backgroundColor: palette.system_accent2[11],
     };
 
-    const [prefetchedAll, setPrefetchedAll] = useState(false);
-
-    useEffect(() => {
-        const waitPrefetchAll = async () => {
-            const res = await prefetchImage();
-            setPrefetchedAll(res);
-        };
-
-        waitPrefetchAll();
-    }, []);
-
     return (
         <SafeAreaView style={([backgroundStyle], { flex: 1 })}>
             <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
