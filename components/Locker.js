@@ -4,26 +4,7 @@ import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import { TextInput } from "react-native-paper";
 import Dialog from "react-native-dialog";
 
-const Button = (props) => {
-    return (
-        <TouchableOpacity onPress={props.onPress}>
-            <View style={[styles.button, { backgroundColor: props.backgroundColor }]}>
-                <Text style={{ textAlign: "center", color: props.textColor, fontWeight: 700, fontSize: 18 }}>{props.text}</Text>
-            </View>
-        </TouchableOpacity>
-    );
-};
-
-const Section = (props) => {
-    const palette = useMaterialYouPalette();
-
-    return (
-        <View>
-            <Text style={[styles.sectionHeader, { color: palette.system_accent2[2] }]}>{props.header}</Text>
-            <Text style={[styles.sectionContent, { color: palette.system_accent2[5] }]}>{props.content}</Text>
-        </View>
-    );
-};
+import { Button, Input, Section } from "./BasicComponents";
 
 const Locker = ({ navigation }) => {
     const palette = useMaterialYouPalette();
@@ -77,27 +58,7 @@ const Locker = ({ navigation }) => {
             <ScrollView contentInsetAdjustmentBehavior="automatic" style={[backgroundStyle]} contentContainerStyle={[styles.container, styles.list]}>
                 <View style={[backgroundStyle, styles.container]}>
                     <Text style={[styles.listTitle, { color: palette.system_accent2[2] }]}>Locker Number 28</Text>
-                    <TextInput
-                        label="Locker's Nickname"
-                        value={lockerName}
-                        onChangeText={(data) => setLockerName(data)}
-                        mode="outlined"
-                        outlineColor={palette.system_accent2[7]}
-                        outlineStyle={{
-                            borderRadius: 10,
-                        }}
-                        activeOutlineColor={palette.system_accent2[2]}
-                        textColor={palette.system_accent2[2]}
-                        selectionColor={palette.system_accent2[4]}
-                        style={{
-                            backgroundColor: palette.system_accent2[11],
-                        }}
-                        theme={{
-                            colors: {
-                                onSurfaceVariant: palette.system_accent2[7],
-                            },
-                        }}
-                    />
+                    <Input label="Locker's Nickname" val={lockerName} valChange={setLockerName}/>
                     <Section header="Locker Number" content={28} />
                     <Section header="Location" content={"your grandma house"} />
                     <Section header="Humidity" content={"20%"} />

@@ -4,64 +4,7 @@ import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import { TextInput } from "react-native-paper";
 import Images, { prefetchImage } from "../static/Images";
 
-const Section = (props) => {
-    const palette = useMaterialYouPalette();
-
-    return (
-        <View>
-            <Text style={[styles.sectionHeader, { color: palette.system_accent2[2] }]}>{props.header}</Text>
-            <Text style={[styles.sectionContent, { color: palette.system_accent2[5] }]}>{props.content}</Text>
-        </View>
-    );
-};
-
-const Input = (props) => {
-    const palette = useMaterialYouPalette();
-    const [prefetchedAll, setPrefetchedAll] = useState(false);
-
-    useEffect(() => {
-        const waitPrefetchAll = async () => {
-            const res = await prefetchImage();
-            setPrefetchedAll(res);
-        };
-
-        waitPrefetchAll();
-    }, []);
-
-    return (
-        <TextInput
-            label={props.label}
-            value={props.val}
-            onChangeText={(data) => props.valChange(data)}
-            mode="outlined"
-            outlineColor={palette.system_accent2[7]}
-            outlineStyle={{
-                borderRadius: 10,
-            }}
-            activeOutlineColor={palette.system_accent2[2]}
-            textColor={palette.system_accent2[2]}
-            selectionColor={palette.system_accent2[4]}
-            style={{
-                backgroundColor: palette.system_accent2[11],
-            }}
-            theme={{
-                colors: {
-                    onSurfaceVariant: palette.system_accent2[7],
-                },
-            }}
-        />
-    );
-};
-
-const Button = (props) => {
-    return (
-        <TouchableOpacity onPress={props.onPress}>
-            <View style={[styles.button, { backgroundColor: props.backgroundColor }]}>
-                <Text style={{ textAlign: "center", color: props.textColor, fontWeight: 700, fontSize: 18 }}>{props.text}</Text>
-            </View>
-        </TouchableOpacity>
-    );
-};
+import { Button, Input } from "./BasicComponents";
 
 const User = ({ navigation }) => {
     const palette = useMaterialYouPalette();
@@ -74,6 +17,17 @@ const User = ({ navigation }) => {
     const backgroundStyle = {
         backgroundColor: palette.system_accent2[11],
     };
+
+    const [prefetchedAll, setPrefetchedAll] = useState(false);
+
+    useEffect(() => {
+        const waitPrefetchAll = async () => {
+            const res = await prefetchImage();
+            setPrefetchedAll(res);
+        };
+
+        waitPrefetchAll();
+    }, []);
 
     return (
         <SafeAreaView style={([backgroundStyle], { flex: 1 })}>
@@ -91,6 +45,7 @@ const User = ({ navigation }) => {
                                 alignItems: "center",
                                 borderRadius: 35,
                             }}
+                            key={prefetchedAll}
                         >
                             <View
                                 style={{

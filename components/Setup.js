@@ -3,16 +3,7 @@ import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import { TextInput } from "react-native-paper";
 
-const Section = (props) => {
-    const palette = useMaterialYouPalette();
-
-    return (
-        <View>
-            <Text style={[styles.sectionHeader, { color: palette.system_accent2[2] }]}>{props.header}</Text>
-            <Text style={[styles.sectionContent, { color: palette.system_accent2[5] }]}>{props.content}</Text>
-        </View>
-    );
-};
+import { Section } from "./BasicComponents";
 
 const Setup = ({ navigation }) => {
     const palette = useMaterialYouPalette();
