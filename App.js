@@ -16,6 +16,7 @@ import Images, { prefetchImage } from "./static/Images";
 import Setup from "./components/Setup";
 import Locker from "./components/Locker";
 import Pairing from "./components/Pairing";
+import User from "./components/User";
 
 const icons = {
     locker: require("./static/secure.png"),
@@ -171,6 +172,20 @@ function App() {
                             <Stack.Screen
                                 name="Unlock"
                                 component={Pairing}
+                                options={{
+                                    headerTitle: "",
+                                    headerStyle: {
+                                        height: 90,
+                                        backgroundColor: palette.system_accent2[11],
+                                        elevation: 0,
+                                    },
+                                    headerTransparent: true,
+                                    headerLeft: () => <CustomBackButton />,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="User Profile"
+                                component={User}
                                 options={{
                                     headerTitle: "",
                                     headerStyle: {

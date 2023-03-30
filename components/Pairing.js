@@ -1,11 +1,22 @@
 import React from "react";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import User from "./Header";
 import ListView from "./ListView";
 import { NFC_SUPPORTED } from "../App";
+
+const Dump = () => {
+    return (
+        <View
+            style={{
+                width: "100%",
+                height: 90,
+            }}
+        ></View>
+    );
+};
 
 const Pairing = () => {
     const palette = useMaterialYouPalette();
@@ -45,7 +56,7 @@ const Pairing = () => {
 
     return (
         <ScrollView contentInsetAdjustmentBehavior="automatic" style={backgroundStyle}>
-            <User />
+            {navigation.getState().routes.at(-1).name === "Unlock" ? <Dump /> : <User />}
             <ListView listTitle={navigation.getState().routes.at(-1).name === "Unlock" ? "Unlock" : "Pairing"} itemsList={data} />
         </ScrollView>
     );

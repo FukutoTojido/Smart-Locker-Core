@@ -7,6 +7,7 @@ const imageObj = {
     pairing: require("./pairing.png"),
     notification: require("./notification.png"),
     back: require("./left-arrow.png"),
+    julie: require("./julietemp.png"),
 };
 
 const prefetchImage = async () => {
