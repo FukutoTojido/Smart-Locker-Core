@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import { TextInput } from "react-native-paper";
 import Images, { prefetchImage } from "../static/Images";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Button, Input } from "./BasicComponents";
+import { AuthContext } from "../App";
+
+import Auth from "../services/AuthService";
 
 const User = ({ navigation }) => {
+    const setToken = useContext(AuthContext);
     const palette = useMaterialYouPalette();
     const isDarkMode = useColorScheme() === "dark";
     const [username, setUsername] = useState("");
@@ -16,6 +21,13 @@ const User = ({ navigation }) => {
 
     const backgroundStyle = {
         backgroundColor: palette.system_accent2[11],
+    };
+
+    const Logout = async () => {
+        await Auth.signOut();
+        const token = await AsyncStorage.getItem("userToken");
+
+        setToken(token);
     };
 
     return (
@@ -34,7 +46,6 @@ const User = ({ navigation }) => {
                                 alignItems: "center",
                                 borderRadius: 35,
                             }}
-                            key={prefetchedAll}
                         >
                             <View
                                 style={{
@@ -59,7 +70,7 @@ const User = ({ navigation }) => {
                     <Input label="Password" val={pwd} valChange={setPwd} pwd={true} />
                     <Input label="Confirm Password" val={confirmPwd} valChange={setConfirmPwd} pwd={true} />
                     <Button onPress={() => {}} textColor={palette.system_accent2[2]} backgroundColor={palette.system_accent2[10]} text={"Update"} />
-                    <Button onPress={() => {}} textColor={palette.system_accent2[2]} backgroundColor={"#9A3030"} text={"Logout"} />
+                    <Button onPress={Logout} textColor={palette.system_accent2[2]} backgroundColor={"#9A3030"} text={"Logout"} />
                 </View>
             </ScrollView>
         </SafeAreaView>

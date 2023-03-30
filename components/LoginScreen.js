@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Image, View, StatusBar } from "react-native";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import MaskedView from "@react-native-masked-view/masked-view";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Button, Input } from "./BasicComponents";
 import Images, { prefetchImage } from "../static/Images";
 
+import Auth from "../services/AuthService";
+import { AuthContext } from "../App";
+
 const LoginScreen = ({ navigation }) => {
+    const setToken = useContext(AuthContext);
     const palette = useMaterialYouPalette();
     const [prefetchedAll, setPrefetchedAll] = useState(false);
     const [width, setW] = useState(0);
@@ -37,6 +42,13 @@ const LoginScreen = ({ navigation }) => {
         waitPrefetchAll();
     }, []);
 
+    const Login = async () => {
+        await Auth.signIn(email.trim(), pwd.trim());
+        const token = await AsyncStorage.getItem("userToken");
+
+        setToken(token);
+    };
+
     return (
         <View style={backgroundStyle}>
             <StatusBar barStyle="light-content" backgroundColor={backgroundStyle.backgroundColor} />
@@ -45,7 +57,7 @@ const LoginScreen = ({ navigation }) => {
             </MaskedView>
             <Input label="Email" val={email} valChange={setEmail} />
             <Input label="Password" val={pwd} valChange={setPwd} pwd={true} />
-            <Button onPress={() => {}} textColor={palette.system_accent2[2]} backgroundColor={palette.system_accent2[9]} text={"Login"} />
+            <Button onPress={Login} textColor={palette.system_accent2[2]} backgroundColor={palette.system_accent2[9]} text={"Login"} />
         </View>
     );
 };

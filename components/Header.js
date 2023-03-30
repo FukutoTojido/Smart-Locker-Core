@@ -25,7 +25,7 @@ const User = () => {
                     navigation.navigate("User Profile");
                 }}
             >
-                <View style={[styles.avatarContainer, { backgroundColor: palette.system_accent2[11] }]} key={prefetchedAll}>
+                <View style={[styles.avatarContainer, { backgroundColor: palette.system_accent2[11] }]}>
                     <Image style={{ width: 30, height: 30, borderRadius: 15 }} source={Images.julie} />
                 </View>
             </TouchableOpacity>
