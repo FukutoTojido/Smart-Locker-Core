@@ -6,6 +6,8 @@ import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import MaskedView from "@react-native-masked-view/masked-view";
 import NfcManager from "react-native-nfc-manager";
+import { Alert } from 'react-native';
+import messaging from '@react-native-firebase/messaging';
 
 import MainScreen from "./components/MainScreen";
 import ColorTest from "./components/Test/Color";
@@ -64,6 +66,20 @@ function App() {
     const backgroundStyle = {
         backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
     };
+
+	useEffect(() => {
+
+		// subscribe to topic
+		messaging().subscribeToTopic("alert").then(() => {
+			console.log(`Subscribed to alert`)
+		})
+
+		const unsubscribe = messaging().onMessage(async remoteMessage => {
+		  Alert.alert(JSON.stringify(remoteMessage));
+		});
+	
+		return unsubscribe;
+	}, []);
 
     return (
         <>
