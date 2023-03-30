@@ -25,3 +25,5 @@ React Native app for Smart Locker service
 - On your Android device, a prompt should appear asking you to allow USB debugging, click **OK**
 - Run `npx react-native run-android` to start the app on your device
 
+## API Base URL
+```https://smart-locker-backend-hcttee6c3a-uc.a.run.app```
