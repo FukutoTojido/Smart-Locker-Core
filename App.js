@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View, Dimensions } from "react-native";
 import { Colors, DebugInstructions, Header, LearnMoreLinks, ReloadInstructions } from "react-native/Libraries/NewAppScreen";
 import { MaterialYouService, useMaterialYou, defaultPalette } from "@assembless/react-native-material-you";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { NavigationContainer, useNavigation, DefaultTheme } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import MaskedView from "@react-native-masked-view/masked-view";
 import NfcManager from "react-native-nfc-manager";
@@ -10,6 +10,8 @@ import { Alert } from "react-native";
 import messaging from "@react-native-firebase/messaging";
 
 import StartScreen from "./components/StartScreen";
+import LoginScreen from "./components/LoginScreen";
+import RegisterScreen from "./components/RegisterScreen";
 import MainScreen from "./components/MainScreen";
 import ColorTest from "./components/Test/Color";
 import NFC from "./components/NFC";
@@ -97,7 +99,7 @@ function App() {
     }, []);
 
     const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+        backgroundColor: palette.system_accent2[11],
     };
 
     useEffect(() => {
@@ -117,13 +119,35 @@ function App() {
 
     return (
         <>
-            <NavigationContainer>
+            <NavigationContainer
+                theme={{
+                    ...DefaultTheme,
+                    colors: {
+                        ...DefaultTheme.colors,
+                        background: backgroundStyle.backgroundColor,
+                    },
+                }}
+            >
                 <MaterialYouService fallbackPalette={defaultPalette}>
                     <SafeAreaView style={[backgroundStyle, { flex: 1 }]} key={prefetchedAll}>
                         <Stack.Navigator>
                             <Stack.Screen
                                 name="Start Screen"
                                 component={StartScreen}
+                                options={{
+                                    headerShown: false,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="Login Screen"
+                                component={LoginScreen}
+                                options={{
+                                    headerShown: false,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="Register Screen"
+                                component={RegisterScreen}
                                 options={{
                                     headerShown: false,
                                 }}

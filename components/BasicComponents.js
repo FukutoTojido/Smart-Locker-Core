@@ -37,6 +37,7 @@ const Input = (props) => {
                     onSurfaceVariant: palette.system_accent2[7],
                 },
             }}
+            secureTextEntry={props.pwd}
         />
     );
 };

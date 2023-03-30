@@ -56,8 +56,8 @@ const User = ({ navigation }) => {
                     </View>
                     <Input label="Username" val={username} valChange={setUsername} />
                     <Input label="Email" val={email} valChange={setEmail} />
-                    <Input label="Password" val={pwd} valChange={setPwd} />
-                    <Input label="Confirm Password" val={confirmPwd} valChange={setConfirmPwd} />
+                    <Input label="Password" val={pwd} valChange={setPwd} pwd={true} />
+                    <Input label="Confirm Password" val={confirmPwd} valChange={setConfirmPwd} pwd={true} />
                     <Button onPress={() => {}} textColor={palette.system_accent2[2]} backgroundColor={palette.system_accent2[10]} text={"Update"} />
                     <Button onPress={() => {}} textColor={palette.system_accent2[2]} backgroundColor={"#9A3030"} text={"Logout"} />
                 </View>

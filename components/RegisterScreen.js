@@ -3,14 +3,17 @@ import { Image, View, StatusBar } from "react-native";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import MaskedView from "@react-native-masked-view/masked-view";
 
-import { Button } from "./BasicComponents";
+import { Button, Input } from "./BasicComponents";
 import Images, { prefetchImage } from "../static/Images";
 
-const StartScreen = ({ navigation }) => {
+const RegisterScreen = ({ navigation }) => {
     const palette = useMaterialYouPalette();
     const [prefetchedAll, setPrefetchedAll] = useState(false);
     const [width, setW] = useState(0);
     const [height, setH] = useState(0);
+    const [email, setEmail] = useState("");
+    const [pwd, setPwd] = useState("");
+    const [confirmPwd, setConfirmPwd] = useState("");
 
     const backgroundStyle = {
         flex: 1,
@@ -41,24 +44,12 @@ const StartScreen = ({ navigation }) => {
             <MaskedView maskElement={<Image style={{ width: "100%" }} source={Images.logo} resizeMode={"contain"} />} key={prefetchedAll}>
                 <View style={{ width: width, height: height, backgroundColor: palette.system_accent2[2] }}></View>
             </MaskedView>
-            <Button
-                onPress={() => {
-                    navigation.navigate("Login Screen");
-                }}
-                textColor={palette.system_accent2[2]}
-                backgroundColor={palette.system_accent2[10]}
-                text={"Login with Email"}
-            />
-            <Button
-                onPress={() => {
-                    navigation.navigate("Register Screen");
-                }}
-                textColor={palette.system_accent2[2]}
-                backgroundColor={palette.system_accent2[9]}
-                text={"Create an account"}
-            />
+            <Input label="Email" val={email} valChange={setEmail} />
+            <Input label="Password" val={pwd} valChange={setPwd} pwd={true} />
+            <Input label="Confirm Password" val={confirmPwd} valChange={setConfirmPwd} pwd={true} />
+            <Button onPress={() => {}} textColor={palette.system_accent2[2]} backgroundColor={palette.system_accent2[9]} text={"Login"} />
         </View>
     );
 };
 
-export default StartScreen;
+export default RegisterScreen;
