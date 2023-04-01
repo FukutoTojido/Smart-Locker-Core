@@ -10,7 +10,7 @@ PushNotification.configure({
 
     // (required) Called when a remote is received or opened, or local notification is opened
     onNotification: function (notification) {
-        // console.log("NOTIFICATION:", notification);
+        console.log("NOTIFICATION:", notification);
 
         // process the notification
 
@@ -52,17 +52,14 @@ PushNotification.configure({
     requestPermissions: true,
 });
 
-PushNotification.channelExists("1", (exists) => {
+PushNotification.channelExists("temperature-alert", (exists) => {
     if (!exists) {
-        PushNotification.createChannel(
-            {
-                channelId: "1", // (required)
-                channelName: "Alarming System", // (required)
-                channelDescription: "A channel to categorise your notifications", // (optional) default: undefined.
-                playSound: false, // (optional) default: true
-            },
-            (created) => console.log(`createChannel returned '${created}'`) // (optional) callback returns whether the channel was created, false means it already existed.
-        );
+        PushNotification.createChannel({
+            channelId: "temperature-alert", // (required)
+            channelName: "Temperature Alert", // (required)
+            channelDescription: "Channel for Temperature notifications", // (optional) default: undefined.
+            playSound: false, // (optional) default: true
+        });
     }
 });
 
@@ -70,13 +67,12 @@ PushNotification.channelExists("1", (exists) => {
 // message: Content of the notification when it is shown
 // expandedMessage: Content of the notification when it is expanded
 // smallText: Small text beside the Application's name on the notification
-const showNotification = (title, message, expandedMessage, smallText) => {
+const showNotification = (title, message, expandedMessage) => {
     PushNotification.localNotification({
-        channelId: "1",
-        bigText: "Big TEXT",
-        subText: "subtext",
-        title: "My Title",
-        message: "My Message",
+        channelId: "temperature-alert",
+        title: title,
+        message: message,
+        color: null
     });
 };
 

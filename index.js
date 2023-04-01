@@ -12,7 +12,7 @@ import NotiService from "./services/NotiService";
 // Register background handler
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
     console.log("Message handled in the background!", remoteMessage);
-    NotiService.showNotification()
+    // NotiService.showNotification()
 });
 
 AppRegistry.registerComponent(appName, () => App);

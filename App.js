@@ -132,8 +132,8 @@ function App() {
 
         const unsubscribe = messaging().onMessage(async (remoteMessage) => {
             // Alert.alert("Test Alert!", JSON.stringify(remoteMessage));
-            console.log("Message received: ", remoteMessage);
-            NotiService.showNotification();
+            // console.log("Message received: ", remoteMessage);
+            NotiService.showNotification(remoteMessage.notification.title, remoteMessage.notification.body);
         });
 
         return unsubscribe;
