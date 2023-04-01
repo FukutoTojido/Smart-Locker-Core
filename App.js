@@ -9,6 +9,7 @@ import NfcManager from "react-native-nfc-manager";
 import { Alert } from "react-native";
 import messaging from "@react-native-firebase/messaging";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import PushNotification from "react-native-push-notification";
 
 import StartScreen from "./components/StartScreen";
 import LoginScreen from "./components/LoginScreen";
@@ -21,6 +22,8 @@ import Setup from "./components/Setup";
 import Locker from "./components/Locker";
 import Pairing from "./components/Pairing";
 import User from "./components/User";
+
+import NotiService from "./services/NotiService";
 
 const icons = {
     locker: require("./static/secure.png"),
@@ -95,7 +98,7 @@ function App() {
 
             if (currentToken !== token) setToken(currentToken);
 
-            console.log(currentToken);
+            // console.log(currentToken);
         };
 
         checkToken();
@@ -128,7 +131,9 @@ function App() {
             });
 
         const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-            Alert.alert(JSON.stringify(remoteMessage));
+            // Alert.alert("Test Alert!", JSON.stringify(remoteMessage));
+            console.log("Message received: ", remoteMessage);
+            NotiService.showNotification();
         });
 
         return unsubscribe;
