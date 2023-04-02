@@ -22,6 +22,7 @@ import Setup from "./components/Setup";
 import Locker from "./components/Locker";
 import Pairing from "./components/Pairing";
 import User from "./components/User";
+import Confirm from "./components/Confirm";
 
 import NotiService from "./services/NotiService";
 
@@ -98,7 +99,7 @@ function App() {
 
             if (currentToken !== token) setToken(currentToken);
 
-            // console.log(currentToken);
+            console.log(currentToken);
         };
 
         checkToken();
@@ -181,6 +182,13 @@ function App() {
                                         <Stack.Screen
                                             name="Register Screen"
                                             component={RegisterScreen}
+                                            options={{
+                                                headerShown: false,
+                                            }}
+                                        />
+                                        <Stack.Screen
+                                            name="Confirm"
+                                            component={Confirm}
                                             options={{
                                                 headerShown: false,
                                             }}

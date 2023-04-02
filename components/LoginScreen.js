@@ -43,10 +43,14 @@ const LoginScreen = ({ navigation }) => {
     }, []);
 
     const Login = async () => {
-        await Auth.signIn(email.trim(), pwd.trim());
-        const token = await AsyncStorage.getItem("userToken");
+        try {
+            await Auth.signIn(email.trim(), pwd.trim());
+            const token = await AsyncStorage.getItem("userToken");
 
-        setToken(token);
+            setToken(token);
+        } catch (e) {
+            console.error(e);
+        }
     };
 
     return (
