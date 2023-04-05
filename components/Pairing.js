@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import { ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import User from "./Header";
 import ListView from "./ListView";
-import { NFC_SUPPORTED } from "../App";
+import { NFC_SUPPORTED, UnlockOrPairingContext } from "../App";
 
 const Dump = () => {
     return (
@@ -21,6 +21,12 @@ const Dump = () => {
 const Pairing = () => {
     const palette = useMaterialYouPalette();
     const navigation = useNavigation();
+    const pairingObj = useContext(UnlockOrPairingContext);
+
+    useEffect(() => {
+        if (navigation.getState().routes.at(-1).name === "Unlock") pairingObj.setVal(false);
+        else pairingObj.setVal(true);
+    }, []);
 
     // console.log(navigation.getState());
 

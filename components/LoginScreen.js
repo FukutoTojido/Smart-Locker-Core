@@ -45,7 +45,7 @@ const LoginScreen = ({ navigation }) => {
     const Login = async () => {
         try {
             await Auth.signIn(email.trim(), pwd.trim());
-            const token = await AsyncStorage.getItem("userToken");
+            const token = await Auth.getToken();
 
             setToken(token);
         } catch (e) {

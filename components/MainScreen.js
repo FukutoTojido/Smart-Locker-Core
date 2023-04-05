@@ -12,6 +12,7 @@ import Images, { prefetchImage } from "../static/Images";
 
 import { icons, Color } from "../App";
 import User from "./Header";
+import Auth from "../services/AuthService";
 
 const Dump = () => {
     return <View></View>;

@@ -1,14 +1,30 @@
 import NfcManager, { NfcTech } from "react-native-nfc-manager";
-import { Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View, Dimensions } from "react-native";
-import React, { useState, useEffect } from "react";
+import {
+    Image,
+    SafeAreaView,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useColorScheme,
+    View,
+    Dimensions,
+    ActivityIndicator,
+} from "react-native";
+import React, { useState, useEffect, useContext } from "react";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import MaskedView from "@react-native-masked-view/masked-view";
 
 import Images from "../static/Images";
+import { UnlockOrPairingContext } from "../App";
+import LockerService from "../services/LockerService";
 
 const NFC = ({ navigation }) => {
     const [enabledState, setEnabledState] = useState(true);
-    const [tagState, setTagState] = useState([]);
+    // const [tagState, setTagState] = useState([]);
+    const pairingObj = useContext(UnlockOrPairingContext);
+    const [isLoading, setIsLoading] = useState(false);
 
     const palette = useMaterialYouPalette();
     const isDarkMode = useColorScheme() === "dark";
@@ -32,18 +48,32 @@ const NFC = ({ navigation }) => {
                 sectorZeroData.push(blockData);
             }
 
-            console.log(`MiFARE Classic 1K found: `);
-            sectorZeroData.forEach((block, idx) => {
-                console.log(`\tBlock ${idx}: ${block}`);
-            });
+            const NFC_sig = sectorZeroData[2].replaceAll(" ", "").slice(12);
 
-            setTagState(sectorZeroData);
-            navigation.navigate("Setup");
+            console.log(`Locker NFC Signature Scanned: ${NFC_sig}`);
+            // setTagState(sectorZeroData);
+
+            if (pairingObj.val) {
+                await NfcManager.cancelTechnologyRequest();
+                navigation.navigate("Setup");
+            } else {
+                setIsLoading(true);
+                const res = await LockerService.UnlockLocker(NFC_sig);
+                setIsLoading(false);
+
+                if (res.status !== "Unallowed") {
+                    NfcManager.cancelTechnologyRequest();
+                    navigation.pop(2);
+                    return;
+                }
+
+                await NfcManager.cancelTechnologyRequest();
+                await NfcManager.requestTechnology(NfcTech.MifareClassic);
+            }
         } catch (ex) {
             console.log("Oops!", ex);
+            await NfcManager.cancelTechnologyRequest();
             // setTagState(JSON.stringify(ex));
-        } finally {
-            NfcManager.cancelTechnologyRequest();
         }
     };
 
@@ -67,15 +97,26 @@ const NFC = ({ navigation }) => {
             <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
             <ScrollView contentInsetAdjustmentBehavior="automatic" style={[backgroundStyle]} contentContainerStyle={styles.container}>
                 <View style={[backgroundStyle, styles.container]}>
-                    <MaskedView maskElement={<Image style={{ width: 90, height: 90 }} resizeMode={"contain"} source={Images.nfc} />}>
-                        <View
+                    {!isLoading ? (
+                        <MaskedView maskElement={<Image style={{ width: 90, height: 90 }} resizeMode={"contain"} source={Images.nfc} />}>
+                            <View
+                                style={{
+                                    width: 90,
+                                    height: 90,
+                                    backgroundColor: enabledState ? palette.system_accent2[2] : palette.system_accent2[7],
+                                }}
+                            ></View>
+                        </MaskedView>
+                    ) : (
+                        <ActivityIndicator
+                            size="large"
+                            color={palette.system_accent2[2]}
                             style={{
-                                width: 90,
-                                height: 90,
-                                backgroundColor: enabledState ? palette.system_accent2[2] : palette.system_accent2[7],
+                                padding: 20,
                             }}
-                        ></View>
-                    </MaskedView>
+                        />
+                    )}
+
                     {enabledState ? (
                         <>
                             <Text
@@ -86,7 +127,7 @@ const NFC = ({ navigation }) => {
                                     color: enabledState ? palette.system_accent2[2] : palette.system_accent2[7],
                                 }}
                             >
-                                Please put your device at the locker's door
+                                {!isLoading ? "Please put your device at the locker's door" : "Please wait..."}
                             </Text>
                             {/* <View
                                 style={{

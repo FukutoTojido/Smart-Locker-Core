@@ -1,13 +1,16 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Image, Text, TouchableOpacity, ToastAndroid, View } from "react-native";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { useNavigation } from "@react-navigation/native";
 import Images, { prefetchImage } from "../static/Images";
 
+import { LockerContext } from "../App";
+
 const ListItem = (props) => {
     const palette = useMaterialYouPalette();
     const navigation = useNavigation();
+    const lockerData = useContext(LockerContext);
 
     return (
         <TouchableOpacity
@@ -16,10 +19,11 @@ const ListItem = (props) => {
                 {
                     borderColor: palette.system_accent2[2],
                 },
-                props.enabled !== false ? "" : styles.listItemDisabled,
+                props.data.enabled !== false ? "" : styles.listItemDisabled,
             ]}
             onPress={() => {
-                if (props.enabled) navigation.navigate(props.navName);
+                if (props.data.type === "locker") lockerData.setVal(props.data.id);
+                if (props.data.enabled) navigation.navigate(props.data.navName);
             }}
         >
             <MaskedView
@@ -27,11 +31,11 @@ const ListItem = (props) => {
                     <Image
                         style={{ width: 30, height: 30 }}
                         source={
-                            props.type === "locker"
+                            props.data.type === "locker"
                                 ? Images.locker
-                                : props.mode === "bluetooth"
+                                : props.data.mode === "bluetooth"
                                 ? Images.bluetooth
-                                : props.mode === "nfc"
+                                : props.data.mode === "nfc"
                                 ? Images.nfc
                                 : ""
                         }
@@ -57,19 +61,19 @@ const ListItem = (props) => {
                     ]}
                     numberOfLines={1}
                 >
-                    {props.type === "locker" ? `Locker: ${props.name}` : props.name}
+                    {props.data.type === "locker" ? `Locker: ${props.data.name}` : props.data.name}
                 </Text>
-                {props.type === "locker" ? (
+                {props.data.type === "locker" ? (
                     <>
-                        <Text style={[styles.listItemText, { color: palette.system_accent2[4] }]}>Location: {props.location}</Text>
-                        {props.lastAccess !== undefined ? (
-                            <Text style={[styles.listItemText, { color: palette.system_accent2[4] }]}>Last access: {props.lastAccess}</Text>
+                        <Text style={[styles.listItemText, { color: palette.system_accent2[4] }]}>Location: {props.data.location}</Text>
+                        {props.data.lastAccess !== undefined ? (
+                            <Text style={[styles.listItemText, { color: palette.system_accent2[4] }]}>Last access: {props.data.lastAccess}</Text>
                         ) : (
                             ""
                         )}
                     </>
-                ) : props.type === "pairing" ? (
-                    <Text style={[styles.listItemText, { color: palette.system_accent2[4] }]}>{props.desc}</Text>
+                ) : props.data.type === "pairing" ? (
+                    <Text style={[styles.listItemText, { color: palette.system_accent2[4] }]}>{props.data.desc}</Text>
                 ) : (
                     ""
                 )}
@@ -97,6 +101,7 @@ const ListView = (props) => {
             {props.itemsList.map((item, idx) => (
                 <ListItem
                     key={idx}
+                    data={item}
                     type={item.type}
                     name={item.name}
                     location={item.location}

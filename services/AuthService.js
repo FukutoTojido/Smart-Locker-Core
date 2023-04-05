@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const server = "https://smart-locker-backend-hcttee6c3a-uc.a.run.app";
 
@@ -71,9 +72,24 @@ const register = async (email, password) => {
     }
 };
 
+const feedsAll = async () => {
+    try {
+        const token = await AsyncStorage.getItem("userToken");
+        const config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+
+        const res = (await axios.get(`${server}/api/feeds/all`, config)).data;
+        return res;
+    } catch (e) {
+        console.error(e);
+    }
+};
+
 export default {
     signIn,
     signOut,
     getToken,
     register,
+    feedsAll,
 };
