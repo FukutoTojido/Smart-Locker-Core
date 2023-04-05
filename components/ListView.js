@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Image, Text, TouchableOpacity, ToastAndroid, View } from "react-native";
+import { Image, Text, TouchableOpacity, ToastAndroid, View, ActivityIndicator } from "react-native";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { useNavigation } from "@react-navigation/native";
@@ -61,7 +61,7 @@ const ListItem = (props) => {
                     ]}
                     numberOfLines={1}
                 >
-                    {props.data.type === "locker" ? `Locker: ${props.data.name}` : props.data.name}
+                    {props.data.name}
                 </Text>
                 {props.data.type === "locker" ? (
                     <>
@@ -98,20 +98,30 @@ const ListView = (props) => {
     return (
         <View style={styles.list} key={prefetchedAll}>
             <Text style={[styles.listTitle, { color: palette.system_accent2[2] }]}>{props.listTitle}</Text>
-            {props.itemsList.map((item, idx) => (
-                <ListItem
-                    key={idx}
-                    data={item}
-                    type={item.type}
-                    name={item.name}
-                    location={item.location}
-                    lastAccess={item.lastAccess}
-                    mode={item.mode}
-                    desc={item.desc}
-                    enabled={item.enabled}
-                    navName={item.navName}
+            {!props.isLoading ? (
+                props.itemsList.map((item, idx) => (
+                    <ListItem
+                        key={idx}
+                        data={item}
+                        type={item.type}
+                        name={item.name}
+                        location={item.location}
+                        lastAccess={item.lastAccess}
+                        mode={item.mode}
+                        desc={item.desc}
+                        enabled={item.enabled}
+                        navName={item.navName}
+                    />
+                ))
+            ) : (
+                <ActivityIndicator
+                    size="large"
+                    color={palette.system_accent2[2]}
+                    style={{
+                        padding: 20,
+                    }}
                 />
-            ))}
+            )}
         </View>
     );
 };

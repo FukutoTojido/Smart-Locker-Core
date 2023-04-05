@@ -10,6 +10,8 @@ import Auth from "../services/AuthService";
 const LockersList = () => {
     const palette = useMaterialYouPalette();
     const [refreshing, setRefreshing] = useState(false);
+    const [lockersData, setLockersData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     const backgroundStyle = {
         backgroundColor: palette.system_accent2[11],
@@ -101,6 +103,24 @@ const LockersList = () => {
 
     const feed = async () => {
         const res = await Auth.feedsAll();
+
+        if (JSON.stringify(res) !== "{}") {
+            setIsLoading(false);
+            setLockersData(
+                res.lockers.map((locker) => {
+                    return {
+                        type: "locker",
+                        ...locker,
+                        name: `Locker ${locker.id}`,
+                        location: "",
+                        lastAccess: "",
+                        enabled: true,
+                        navName: "Locker",
+                    };
+                })
+            );
+        }
+
         console.log(res);
     };
 
@@ -111,9 +131,7 @@ const LockersList = () => {
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
         await feed();
-        setTimeout(() => {
-            setRefreshing(false);
-        }, 2000);
+        setRefreshing(false);
     }, []);
 
     return (
@@ -123,7 +141,7 @@ const LockersList = () => {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         >
             <User />
-            <ListView listTitle="Lockers List" itemsList={data} />
+            <ListView listTitle="Lockers List" itemsList={lockersData} isLoading={isLoading} />
         </ScrollView>
     );
 };
