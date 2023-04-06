@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import React, { useEffect, useState, useContext } from "react";
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View, ToastAndroid } from "react-native";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import { TextInput } from "react-native-paper";
 import Dialog from "react-native-dialog";
 
 import { Button, Input, Section } from "./BasicComponents";
+import { LockerContext } from "../App";
 
 const Locker = ({ navigation }) => {
     const palette = useMaterialYouPalette();
@@ -12,6 +13,7 @@ const Locker = ({ navigation }) => {
     const [lockerName, setLockerName] = useState("");
     const [dialog, setDialog] = useState(false);
     const [disposed, setDisposed] = useState(false);
+    const lockerData = useContext(LockerContext);
 
     const backgroundStyle = {
         backgroundColor: palette.system_accent2[11],
@@ -57,19 +59,25 @@ const Locker = ({ navigation }) => {
             <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
             <ScrollView contentInsetAdjustmentBehavior="automatic" style={[backgroundStyle]} contentContainerStyle={[styles.container, styles.list]}>
                 <View style={[backgroundStyle, styles.container]}>
-                    <Text style={[styles.listTitle, { color: palette.system_accent2[2] }]}>Locker Number 28</Text>
-                    <Input label="Locker's Nickname" val={lockerName} valChange={setLockerName}/>
-                    <Section header="Locker Number" content={28} />
-                    <Section header="Location" content={"your grandma house"} />
-                    <Section header="Humidity" content={"20%"} />
-                    <Section header="Temperature" content={"30°C"} />
+                    <Text style={[styles.listTitle, { color: palette.system_accent2[2] }]}>{lockerData.val.name}</Text>
+                    <Input label="Locker's Nickname" val={lockerName} valChange={setLockerName} />
+                    <Section header="Locker Number" content={lockerData.val.id} />
+                    <Section header="Location" content={lockerData.val.location} />
+                    <Section
+                        header="Humidity"
+                        content={`${Object.values(lockerData.val.feeds.filter((f) => f.feed_type === "moisture")[0].feed_data).at(-1)}%`}
+                    />
+                    <Section
+                        header="Temperature"
+                        content={`${Object.values(lockerData.val.feeds.filter((f) => f.feed_type === "temperature")[0].feed_data).at(-1)}°C`}
+                    />
                     <Button
                         onPress={() => {
                             navigation.navigate("Unlock");
                         }}
                         textColor={palette.system_accent2[2]}
                         backgroundColor={palette.system_accent2[10]}
-                        text={"Unlock"}
+                        text={lockerData.val.lock_status === "locked" ? "Unlock" : "Lock"}
                     />
                     <Button onPress={showDialog} textColor={palette.system_accent2[2]} backgroundColor={"#9A3030"} text={"Dispose"} />
                     <Dialog.Container

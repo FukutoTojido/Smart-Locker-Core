@@ -17,7 +17,7 @@ const User = () => {
 
     return (
         <View style={styles.header}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
                 style={{
                     width: 100,
                     height: 40,
@@ -30,7 +30,7 @@ const User = () => {
                 onPress={TestPing}
             >
                 <Text style={{ color: palette.system_accent2[11], fontSize: 15, fontWeight: 700 }}>Test me!</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <Text style={[styles.welcomeText, { color: palette.system_accent2[2] }]}>Welcome back, Mogami</Text>
             <TouchableOpacity
                 style={{

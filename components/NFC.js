@@ -11,19 +11,23 @@ import {
     View,
     Dimensions,
     ActivityIndicator,
+    ToastAndroid,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import MaskedView from "@react-native-masked-view/masked-view";
 
 import Images from "../static/Images";
-import { UnlockOrPairingContext } from "../App";
+import { UnlockOrPairingContext, LockerContext, AllLockersDataContext } from "../App";
 import LockerService from "../services/LockerService";
+import Auth from "../services/AuthService";
 
 const NFC = ({ navigation }) => {
     const [enabledState, setEnabledState] = useState(true);
     // const [tagState, setTagState] = useState([]);
     const pairingObj = useContext(UnlockOrPairingContext);
+    const lockerData = useContext(LockerContext);
+    const allLockersData = useContext(AllLockersDataContext);
     const [isLoading, setIsLoading] = useState(false);
 
     const palette = useMaterialYouPalette();
@@ -31,6 +35,32 @@ const NFC = ({ navigation }) => {
 
     const backgroundStyle = {
         backgroundColor: palette.system_accent2[11],
+    };
+
+    useEffect(() => {
+        return () => {
+            NfcManager.cancelTechnologyRequest();
+        };
+    }, []);
+
+    const feed = async () => {
+        const res = await Auth.feedsAll();
+
+        if (JSON.stringify(res) !== "{}") {
+            allLockersData.setVal(
+                res.lockers.map((locker) => {
+                    return {
+                        type: "locker",
+                        ...locker,
+                        name: `Locker ${locker.id}`,
+                        enabled: true,
+                        navName: "Locker",
+                    };
+                })
+            );
+        }
+
+        // console.log(lockersData);
     };
 
     const readTag = async () => {
@@ -54,14 +84,25 @@ const NFC = ({ navigation }) => {
             // setTagState(sectorZeroData);
 
             if (pairingObj.val) {
+                setIsLoading(true);
                 await NfcManager.cancelTechnologyRequest();
-                navigation.navigate("Setup");
+                setIsLoading(false);
+
+                // navigation.navigate("Setup");
+                navigation.reset({
+                    index: 1,
+                    routes: [{ name: "MainScreen" }, { name: "Setup" }],
+                });
             } else {
                 setIsLoading(true);
-                const res = await LockerService.UnlockLocker(NFC_sig);
+                const res =
+                    lockerData.val.lock_status === "locked" ? await LockerService.UnlockLocker(NFC_sig) : await LockerService.LockLocker(NFC_sig);
+                console.log(res);
+                await feed();
                 setIsLoading(false);
 
                 if (res.status !== "Unallowed") {
+                    ToastAndroid.showWithGravity(res.status, ToastAndroid.SHORT, ToastAndroid.CENTER);
                     NfcManager.cancelTechnologyRequest();
                     navigation.pop(2);
                     return;

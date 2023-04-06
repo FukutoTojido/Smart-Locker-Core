@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import { ScrollView, RefreshControl } from "react-native";
 
@@ -6,114 +6,30 @@ import User from "./Header";
 import ListView from "./ListView";
 
 import Auth from "../services/AuthService";
+import { AllLockersDataContext } from "../App";
 
 const LockersList = () => {
     const palette = useMaterialYouPalette();
     const [refreshing, setRefreshing] = useState(false);
     const [lockersData, setLockersData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const allLockersData = useContext(AllLockersDataContext);
 
     const backgroundStyle = {
         backgroundColor: palette.system_accent2[11],
     };
-
-    const data = [
-        {
-            id: 0,
-            type: "locker",
-            name: "12312329809138490102341461",
-            location: "yo grandma house",
-            lastAccess: "1677683725",
-            enabled: true,
-            navName: "Locker",
-        },
-        {
-            id: 1,
-            type: "locker",
-            name: "name",
-            location: "yo grandma house",
-            lastAccess: "1677683725",
-            enabled: true,
-            navName: "Locker",
-        },
-        {
-            id: 1,
-            type: "locker",
-            name: "name",
-            location: "yo grandma house",
-            lastAccess: "1677683725",
-            enabled: true,
-            navName: "Locker",
-        },
-        {
-            id: 1,
-            type: "locker",
-            name: "name",
-            location: "yo grandma house",
-            lastAccess: "1677683725",
-            enabled: true,
-            navName: "Locker",
-        },
-        {
-            id: 1,
-            type: "locker",
-            name: "name",
-            location: "yo grandma house",
-            lastAccess: "1677683725",
-            enabled: true,
-            navName: "Locker",
-        },
-        {
-            id: 1,
-            type: "locker",
-            name: "name",
-            location: "yo grandma house",
-            lastAccess: "1677683725",
-            enabled: true,
-            navName: "Locker",
-        },
-        {
-            id: 1,
-            type: "locker",
-            name: "name",
-            location: "yo grandma house",
-            lastAccess: "1677683725",
-            enabled: true,
-            navName: "Locker",
-        },
-        {
-            id: 1,
-            type: "locker",
-            name: "name",
-            location: "yo grandma house",
-            lastAccess: "1677683725",
-            enabled: true,
-            navName: "Locker",
-        },
-        {
-            id: 1,
-            type: "locker",
-            name: "name",
-            location: "yo grandma house",
-            lastAccess: "1677683725",
-            enabled: true,
-            navName: "Locker",
-        },
-    ];
 
     const feed = async () => {
         const res = await Auth.feedsAll();
 
         if (JSON.stringify(res) !== "{}") {
             setIsLoading(false);
-            setLockersData(
+            allLockersData.setVal(
                 res.lockers.map((locker) => {
                     return {
                         type: "locker",
                         ...locker,
                         name: `Locker ${locker.id}`,
-                        location: "",
-                        lastAccess: "",
                         enabled: true,
                         navName: "Locker",
                     };
@@ -121,7 +37,9 @@ const LockersList = () => {
             );
         }
 
-        console.log(res);
+        console.log("Data fetched");
+
+        // console.log(lockersData);
     };
 
     useEffect(() => {
@@ -141,7 +59,7 @@ const LockersList = () => {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         >
             <User />
-            <ListView listTitle="Lockers List" itemsList={lockersData} isLoading={isLoading} />
+            <ListView listTitle="Lockers List" itemsList={allLockersData.val} isLoading={isLoading} />
         </ScrollView>
     );
 };
