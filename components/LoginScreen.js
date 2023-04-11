@@ -29,7 +29,7 @@ const LoginScreen = ({ navigation }) => {
 
     useEffect(() => {
         Image.getSize(Image.resolveAssetSource(Images.logo).uri, (width, height) => {
-            // console.log(width, height);
+            console.log(width, height);
             setW(width);
             setH(height);
         });
@@ -56,8 +56,8 @@ const LoginScreen = ({ navigation }) => {
     return (
         <View style={backgroundStyle}>
             <StatusBar barStyle="light-content" backgroundColor={backgroundStyle.backgroundColor} />
-            <MaskedView maskElement={<Image style={{ width: "100%" }} source={Images.logo} resizeMode={"contain"} />} key={prefetchedAll}>
-                <View style={{ width: width, height: height, backgroundColor: palette.system_accent2[2] }}></View>
+            <MaskedView maskElement={<Image style={{ width: 340, height: 87 }} source={Images.logo} resizeMode={"contain"} />} key={prefetchedAll}>
+                <View style={{ width: 340, height: 120, backgroundColor: palette.system_accent2[2] }}></View>
             </MaskedView>
             <Input label="Email" val={email} valChange={setEmail} />
             <Input label="Password" val={pwd} valChange={setPwd} pwd={true} />
