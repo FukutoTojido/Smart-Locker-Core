@@ -99,12 +99,14 @@ const NFC = ({ navigation }) => {
                     lockerData.val.lock_status === "locked" ? await LockerService.UnlockLocker(NFC_sig) : await LockerService.LockLocker(NFC_sig);
                 console.log(res);
                 await feed();
+                const newCurrentData = allLockersData.val.filter((f) => f.id === lockerData.val.id)[0];
+                lockerData.setVal({ ...newCurrentData, type: "locker", name: `Locker ${newCurrentData.id}`, enabled: true, navName: "Locker" });
                 setIsLoading(false);
 
                 if (res.status !== "Unallowed") {
                     ToastAndroid.showWithGravity(res.status, ToastAndroid.SHORT, ToastAndroid.CENTER);
                     NfcManager.cancelTechnologyRequest();
-                    navigation.pop(2);
+                    navigation.pop(3);
                     return;
                 }
 

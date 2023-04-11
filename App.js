@@ -195,6 +195,7 @@ function App() {
                             >
                                 <MaterialYouService fallbackPalette={defaultPalette}>
                                     <SafeAreaView style={[backgroundStyle, { flex: 1 }]} key={prefetchedAll}>
+                                        <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
                                         <Stack.Navigator>
                                             {token === "" ? (
                                                 <Stack.Screen

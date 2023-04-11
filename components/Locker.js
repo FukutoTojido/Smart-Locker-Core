@@ -55,9 +55,7 @@ const Locker = ({ navigation }) => {
     }, [disposed]);
 
     return (
-        <SafeAreaView style={([backgroundStyle], { flex: 1 })}>
-            <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
-            <ScrollView contentInsetAdjustmentBehavior="automatic" style={[backgroundStyle]} contentContainerStyle={[styles.container, styles.list]}>
+            <ScrollView contentInsetAdjustmentBehavior="automatic" style={[backgroundStyle]} contentContainerStyle={[styles.list]}>
                 <View style={[backgroundStyle, styles.container]}>
                     <Text style={[styles.listTitle, { color: palette.system_accent2[2] }]}>{lockerData.val.name}</Text>
                     <Input label="Locker's Nickname" val={lockerName} valChange={setLockerName} />
@@ -107,7 +105,6 @@ const Locker = ({ navigation }) => {
                     </Dialog.Container>
                 </View>
             </ScrollView>
-        </SafeAreaView>
     );
 };
 
@@ -115,6 +112,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         gap: 20,
+        height: "100%"
         // justifyContent: "center",
         // alignContent: "center",
         // alignItems: "center",
