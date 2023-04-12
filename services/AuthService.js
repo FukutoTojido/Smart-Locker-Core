@@ -10,26 +10,22 @@ const server = "https://smart-locker-backend-hcttee6c3a-uc.a.run.app";
 //}
 
 const signIn = async (email, password) => {
-    try {
-        const response = await fetch(`${server}/api/users/login`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email,
-                password,
-            }),
-        });
-        const json = await response.json();
-        if (json.token) {
-            await AsyncStorage.setItem("userToken", json.token);
-        }
-        return json;
-    } catch (error) {
-        console.error(error);
-    }
+
+	try {
+		const res = (await axios.post(`${server}/api/users/login`, {
+			email,
+			password,
+		})).data;
+		if (res.token) {
+			await AsyncStorage.setItem("userToken", res.token);
+		}
+		return res;
+	}
+	catch (e) {
+		console.error(e);
+		return {};
+	}
+
 };
 
 const signOut = async () => {
@@ -50,26 +46,21 @@ const getToken = async () => {
 };
 
 const register = async (email, password) => {
-    try {
-        const response = await fetch(`${server}/api/users/register`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email,
-                password,
-            }),
-        });
-        const json = await response.json();
-        if (json.token) {
-            await AsyncStorage.setItem("userToken", json.token);
-        }
-        return { res: json, status: response.status };
-    } catch (error) {
-        console.error(error);
-    }
+
+	try {
+		const res = (await axios.post(`${server}/api/users/register`, {
+			email,
+			password,
+		})).data;
+		if (res.token) {
+			await AsyncStorage.setItem("userToken", res.token);
+		}
+		return res;
+	}
+	catch (e) {
+		console.error(e);
+		return {};
+	}
 };
 
 const feedsAll = async () => {
