@@ -3,9 +3,12 @@ import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import { TextInput } from "react-native-paper";
 import Dialog from "react-native-dialog";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Button, Input, Section } from "./BasicComponents";
-import { LockerContext } from "../App";
+import { LockerContext, LoadingContext, AllLockersDataContext } from "../App";
+import LockerService from "../services/LockerService";
+import Auth from "../services/AuthService";
 
 const Locker = ({ navigation }) => {
     const palette = useMaterialYouPalette();
@@ -14,9 +17,33 @@ const Locker = ({ navigation }) => {
     const [dialog, setDialog] = useState(false);
     const [disposed, setDisposed] = useState(false);
     const lockerData = useContext(LockerContext);
+    const loadingCtx = useContext(LoadingContext);
+    const allLockersData = useContext(AllLockersDataContext)
 
     const backgroundStyle = {
         backgroundColor: palette.system_accent2[11],
+    };
+
+    const feed = async () => {
+        loadingCtx.setVal(true);
+        const res = await Auth.feedsAll();
+
+        if (JSON.stringify(res) !== "{}") {
+            allLockersData.setVal(
+                res.lockers.map((locker) => {
+                    return {
+                        type: "locker",
+                        ...locker,
+                        name: `Locker ${locker.id}`,
+                        enabled: true,
+                        navName: "Locker",
+                    };
+                })
+            );
+        }
+        loadingCtx.setVal(false);
+
+        // console.log(lockersData);
     };
 
     const goHome = () => {
@@ -38,7 +65,10 @@ const Locker = ({ navigation }) => {
         setDialog(false);
     };
 
-    const toDispose = () => {
+    const toDispose = async () => {
+        const res = await LockerService.UnpairLocker(lockerData.val.nfc_sig);
+        feed();
+        ToastAndroid.showWithGravity(res.status, ToastAndroid.LONG, ToastAndroid.CENTER);
         setDialog(false);
         setDisposed(true);
 

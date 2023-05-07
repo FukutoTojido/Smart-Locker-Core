@@ -32,7 +32,7 @@ const UnlockLocker = async (lockerSig) => {
     }
 };
 
-const PairLocker = async (lockerSig, location, num) => {
+const PairLocker = async (lockerSig) => {
     try {
         const config = {
             headers: { Authorization: `Bearer ${await AuthService.getToken()}` },
@@ -50,4 +50,22 @@ const PairLocker = async (lockerSig, location, num) => {
     }
 };
 
-export default { LockLocker, UnlockLocker, PairLocker };
+const UnpairLocker = async (lockerSig) => {
+    try {
+        const config = {
+            headers: { Authorization: `Bearer ${await AuthService.getToken()}` },
+        }
+        const res = (
+            await axios.post(`${server}/api/lockers/unpair`, {
+                nfc_sig: lockerSig,
+            }, config)
+        ).data;
+
+        return res;
+    } catch (e) {
+        console.log("You fucked up something");
+        return { status: "This is not a locker?!" };
+    }
+};
+
+export default { LockLocker, UnlockLocker, PairLocker, UnpairLocker };
