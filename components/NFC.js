@@ -109,11 +109,23 @@ const NFC = ({ navigation }) => {
                     });
                 } else {
                     pairingCtx.setVal(NFC_sig);
+                    const res = await LockerService.PairLocker(NFC_sig);
 
+                    ToastAndroid.showWithGravity(res.status, ToastAndroid.LONG, ToastAndroid.CENTER);
+                    // navigation.reset({
+                    //     index: 1,
+                    //     routes: [{ name: "MainScreen" }, { name: "Setup" }],
+                    // });
                     navigation.reset({
-                        index: 1,
-                        routes: [{ name: "MainScreen" }, { name: "Setup" }],
+                        index: 0,
+                        routes: [
+                            {
+                                name: "MainScreen",
+                            },
+                        ],
                     });
+
+                    feed();
                 }
             } else {
                 setIsLoading(true);

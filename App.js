@@ -107,7 +107,7 @@ function App() {
     const feed = async () => {
         const res = await Auth.feedsAll();
 
-        if (JSON.stringify(res) !== "{}") {
+        if (res && JSON.stringify(res) !== "{}") {
             setAllLockersData(
                 res.lockers.map((locker) => {
                     return {
@@ -119,6 +119,11 @@ function App() {
                     };
                 })
             );
+        }
+
+        if (!res) {
+            const token = await AsyncStorage.getItem("userToken");
+            setToken(token);
         }
 
         console.log("Data fetched intervally");

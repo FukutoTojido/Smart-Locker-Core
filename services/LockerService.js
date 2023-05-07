@@ -38,9 +38,7 @@ const PairLocker = async (lockerSig, location, num) => {
             headers: { Authorization: `Bearer ${await AuthService.getToken()}` },
         }
         const res = (
-            await axios.post(`${server}/api/lockers/new`, {
-                locker_num: num,
-                location,
+            await axios.post(`${server}/api/lockers/pairing`, {
                 nfc_sig: lockerSig,
             }, config)
         ).data;
@@ -48,7 +46,7 @@ const PairLocker = async (lockerSig, location, num) => {
         return res;
     } catch (e) {
         console.log("You fucked up something");
-        return { status: "you fucked up" };
+        return { status: "This is not a locker?!" };
     }
 };
 

@@ -75,7 +75,9 @@ const feedsAll = async () => {
     } catch (e) {
         // console.error(e);
         ToastAndroid.showWithGravity("Token expired. Please login again", ToastAndroid.SHORT, ToastAndroid.CENTER);
-        signOut();
+        await signOut();
+
+        const token = await AsyncStorage.getItem("userToken");
         return;
     }
 };

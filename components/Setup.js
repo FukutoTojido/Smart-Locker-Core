@@ -30,7 +30,7 @@ const Setup = ({ navigation }) => {
 
         const res = await AuthService.feedsAll();
 
-        if (JSON.stringify(res) !== "{}") {
+        if (res && JSON.stringify(res) !== "{}") {
             allLockersData.setVal(
                 res.lockers.map((locker) => {
                     return {
