@@ -90,6 +90,8 @@ const AuthContext = createContext();
 const LockerContext = createContext();
 const UnlockOrPairingContext = createContext();
 const AllLockersDataContext = createContext();
+const LoadingContext = createContext();
+const PairingContext = createContext();
 
 function App() {
     const isDarkMode = useColorScheme() === "dark";
@@ -98,6 +100,8 @@ function App() {
     const [token, setToken] = useState("");
     const [lockerData, setLockerData] = useState(null);
     const [isPairing, setIsPairing] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [currentNfcSig, setCurrentNfcSig] = useState("");
     const [allLockersData, setAllLockersData] = useState([]);
 
     const feed = async () => {
@@ -184,147 +188,154 @@ function App() {
                 <AllLockersDataContext.Provider value={{ val: allLockersData, setVal: setAllLockersData }}>
                     <LockerContext.Provider value={{ val: lockerData, setVal: setLockerData }}>
                         <UnlockOrPairingContext.Provider value={{ val: isPairing, setVal: setIsPairing }}>
-                            <NavigationContainer
-                                theme={{
-                                    ...DefaultTheme,
-                                    colors: {
-                                        ...DefaultTheme.colors,
-                                        background: backgroundStyle.backgroundColor,
-                                    },
-                                }}
-                            >
-                                <MaterialYouService fallbackPalette={defaultPalette}>
-                                    <SafeAreaView style={[backgroundStyle, { flex: 1 }]} key={prefetchedAll}>
-                                        <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
-                                        <Stack.Navigator>
-                                            {token === "" ? (
-                                                <Stack.Screen
-                                                    name="Placeholder"
-                                                    component={Placeholder}
-                                                    options={{
-                                                        headerShown: false,
-                                                    }}
+                            <LoadingContext.Provider value={{ val: isLoading, setVal: setIsLoading }}>
+                                <PairingContext.Provider value={{ val: currentNfcSig, setVal: setCurrentNfcSig }}>
+                                    <NavigationContainer
+                                        theme={{
+                                            ...DefaultTheme,
+                                            colors: {
+                                                ...DefaultTheme.colors,
+                                                background: backgroundStyle.backgroundColor,
+                                            },
+                                        }}
+                                    >
+                                        <MaterialYouService fallbackPalette={defaultPalette}>
+                                            <SafeAreaView style={[backgroundStyle, { flex: 1 }]} key={prefetchedAll}>
+                                                <StatusBar
+                                                    barStyle={isDarkMode ? "light-content" : "dark-content"}
+                                                    backgroundColor={backgroundStyle.backgroundColor}
                                                 />
-                                            ) : token === null ? (
-                                                <>
-                                                    <Stack.Screen
-                                                        name="Start Screen"
-                                                        component={StartScreen}
-                                                        options={{
-                                                            headerShown: false,
-                                                        }}
-                                                    />
-                                                    <Stack.Screen
-                                                        name="Login Screen"
-                                                        component={LoginScreen}
-                                                        options={{
-                                                            headerShown: false,
-                                                        }}
-                                                    />
-                                                    <Stack.Screen
-                                                        name="Register Screen"
-                                                        component={RegisterScreen}
-                                                        options={{
-                                                            headerShown: false,
-                                                        }}
-                                                    />
-                                                    <Stack.Screen
-                                                        name="Confirm"
-                                                        component={Confirm}
-                                                        options={{
-                                                            headerShown: false,
-                                                        }}
-                                                    />
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Stack.Screen
-                                                        name="MainScreen"
-                                                        component={MainScreen}
-                                                        options={{
-                                                            headerShown: false,
-                                                        }}
-                                                    />
-                                                    <Stack.Screen name="Test" component={ColorTest} />
-                                                    <Stack.Screen
-                                                        name="NFC"
-                                                        component={NFC}
-                                                        options={{
-                                                            headerTitle: "",
-                                                            headerStyle: {
-                                                                height: 90,
-                                                                backgroundColor: palette.system_accent2[11],
-                                                                elevation: 0,
-                                                            },
-                                                            headerTransparent: true,
-                                                            headerLeft: () => <CustomBackButton />,
-                                                        }}
-                                                    />
-                                                    <Stack.Screen
-                                                        name="Setup"
-                                                        component={Setup}
-                                                        options={{
-                                                            headerTitle: "",
-                                                            headerStyle: {
-                                                                height: 90,
-                                                                backgroundColor: palette.system_accent2[11],
-                                                                elevation: 0,
-                                                            },
-                                                            headerTransparent: true,
-                                                            headerLeft: () => <CustomBackButton goHome={true} />,
-                                                        }}
-                                                    />
-                                                    <Stack.Screen
-                                                        name="Locker"
-                                                        component={Locker}
-                                                        options={{
-                                                            headerTitle: "",
-                                                            headerStyle: {
-                                                                height: 90,
-                                                                backgroundColor: palette.system_accent2[11],
-                                                                elevation: 0,
-                                                            },
-                                                            headerTransparent: true,
-                                                            headerLeft: () => <CustomBackButton />,
-                                                        }}
-                                                    />
-                                                    <Stack.Screen
-                                                        name="Unlock"
-                                                        component={Pairing}
-                                                        options={{
-                                                            headerTitle: "",
-                                                            headerStyle: {
-                                                                height: 90,
-                                                                backgroundColor: palette.system_accent2[11],
-                                                                elevation: 0,
-                                                            },
-                                                            headerTransparent: true,
-                                                            headerLeft: () => <CustomBackButton />,
-                                                        }}
-                                                    />
-                                                    <Stack.Screen
-                                                        name="User Profile"
-                                                        component={User}
-                                                        options={{
-                                                            headerTitle: "",
-                                                            headerStyle: {
-                                                                height: 90,
-                                                                backgroundColor: palette.system_accent2[11],
-                                                                elevation: 0,
-                                                            },
-                                                            headerTransparent: true,
-                                                            headerLeft: () => <CustomBackButton />,
-                                                        }}
-                                                    />
-                                                </>
-                                            )}
-                                        </Stack.Navigator>
+                                                <Stack.Navigator>
+                                                    {token === "" ? (
+                                                        <Stack.Screen
+                                                            name="Placeholder"
+                                                            component={Placeholder}
+                                                            options={{
+                                                                headerShown: false,
+                                                            }}
+                                                        />
+                                                    ) : token === null ? (
+                                                        <>
+                                                            <Stack.Screen
+                                                                name="Start Screen"
+                                                                component={StartScreen}
+                                                                options={{
+                                                                    headerShown: false,
+                                                                }}
+                                                            />
+                                                            <Stack.Screen
+                                                                name="Login Screen"
+                                                                component={LoginScreen}
+                                                                options={{
+                                                                    headerShown: false,
+                                                                }}
+                                                            />
+                                                            <Stack.Screen
+                                                                name="Register Screen"
+                                                                component={RegisterScreen}
+                                                                options={{
+                                                                    headerShown: false,
+                                                                }}
+                                                            />
+                                                            <Stack.Screen
+                                                                name="Confirm"
+                                                                component={Confirm}
+                                                                options={{
+                                                                    headerShown: false,
+                                                                }}
+                                                            />
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Stack.Screen
+                                                                name="MainScreen"
+                                                                component={MainScreen}
+                                                                options={{
+                                                                    headerShown: false,
+                                                                }}
+                                                            />
+                                                            <Stack.Screen name="Test" component={ColorTest} />
+                                                            <Stack.Screen
+                                                                name="NFC"
+                                                                component={NFC}
+                                                                options={{
+                                                                    headerTitle: "",
+                                                                    headerStyle: {
+                                                                        height: 90,
+                                                                        backgroundColor: palette.system_accent2[11],
+                                                                        elevation: 0,
+                                                                    },
+                                                                    headerTransparent: true,
+                                                                    headerLeft: () => <CustomBackButton />,
+                                                                }}
+                                                            />
+                                                            <Stack.Screen
+                                                                name="Setup"
+                                                                component={Setup}
+                                                                options={{
+                                                                    headerTitle: "",
+                                                                    headerStyle: {
+                                                                        height: 90,
+                                                                        backgroundColor: palette.system_accent2[11],
+                                                                        elevation: 0,
+                                                                    },
+                                                                    headerTransparent: true,
+                                                                    headerLeft: () => <CustomBackButton goHome={true} />,
+                                                                }}
+                                                            />
+                                                            <Stack.Screen
+                                                                name="Locker"
+                                                                component={Locker}
+                                                                options={{
+                                                                    headerTitle: "",
+                                                                    headerStyle: {
+                                                                        height: 90,
+                                                                        backgroundColor: palette.system_accent2[11],
+                                                                        elevation: 0,
+                                                                    },
+                                                                    headerTransparent: true,
+                                                                    headerLeft: () => <CustomBackButton />,
+                                                                }}
+                                                            />
+                                                            <Stack.Screen
+                                                                name="Unlock"
+                                                                component={Pairing}
+                                                                options={{
+                                                                    headerTitle: "",
+                                                                    headerStyle: {
+                                                                        height: 90,
+                                                                        backgroundColor: palette.system_accent2[11],
+                                                                        elevation: 0,
+                                                                    },
+                                                                    headerTransparent: true,
+                                                                    headerLeft: () => <CustomBackButton />,
+                                                                }}
+                                                            />
+                                                            <Stack.Screen
+                                                                name="User Profile"
+                                                                component={User}
+                                                                options={{
+                                                                    headerTitle: "",
+                                                                    headerStyle: {
+                                                                        height: 90,
+                                                                        backgroundColor: palette.system_accent2[11],
+                                                                        elevation: 0,
+                                                                    },
+                                                                    headerTransparent: true,
+                                                                    headerLeft: () => <CustomBackButton />,
+                                                                }}
+                                                            />
+                                                        </>
+                                                    )}
+                                                </Stack.Navigator>
 
-                                        {/* <MainScreen /> */}
-                                        {/* <ColorTest /> */}
-                                    </SafeAreaView>
-                                </MaterialYouService>
-                            </NavigationContainer>
+                                                {/* <MainScreen /> */}
+                                                {/* <ColorTest /> */}
+                                            </SafeAreaView>
+                                        </MaterialYouService>
+                                    </NavigationContainer>
+                                </PairingContext.Provider>
+                            </LoadingContext.Provider>
                         </UnlockOrPairingContext.Provider>
                     </LockerContext.Provider>
                 </AllLockersDataContext.Provider>
@@ -334,4 +345,4 @@ function App() {
 }
 
 export default App;
-export { icons, NFC_SUPPORTED, AuthContext, LockerContext, UnlockOrPairingContext, AllLockersDataContext };
+export { icons, NFC_SUPPORTED, AuthContext, LockerContext, UnlockOrPairingContext, AllLockersDataContext, LoadingContext, PairingContext };

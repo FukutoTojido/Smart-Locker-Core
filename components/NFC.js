@@ -18,9 +18,13 @@ import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import MaskedView from "@react-native-masked-view/masked-view";
 
 import Images from "../static/Images";
-import { UnlockOrPairingContext, LockerContext, AllLockersDataContext } from "../App";
+import { UnlockOrPairingContext, LockerContext, AllLockersDataContext, LoadingContext, PairingContext } from "../App";
 import LockerService from "../services/LockerService";
 import Auth from "../services/AuthService";
+
+const timeout = (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+};
 
 const NFC = ({ navigation }) => {
     const [enabledState, setEnabledState] = useState(true);
@@ -28,6 +32,8 @@ const NFC = ({ navigation }) => {
     const pairingObj = useContext(UnlockOrPairingContext);
     const lockerData = useContext(LockerContext);
     const allLockersData = useContext(AllLockersDataContext);
+    const loadingCtx = useContext(LoadingContext);
+    const pairingCtx = useContext(PairingContext);
     const [isLoading, setIsLoading] = useState(false);
 
     const palette = useMaterialYouPalette();
@@ -44,6 +50,7 @@ const NFC = ({ navigation }) => {
     }, []);
 
     const feed = async () => {
+        loadingCtx.setVal(true);
         const res = await Auth.feedsAll();
 
         if (JSON.stringify(res) !== "{}") {
@@ -59,26 +66,26 @@ const NFC = ({ navigation }) => {
                 })
             );
         }
+        loadingCtx.setVal(false);
 
         // console.log(lockersData);
     };
 
     const readTag = async () => {
         try {
-            const sectorZeroData = [];
             await NfcManager.requestTechnology(NfcTech.MifareClassic);
 
-            await NfcManager.mifareClassicHandlerAndroid.mifareClassicAuthenticateA(0, [0x60, 0x90, 0xd0, 0x06, 0x32, 0xf5]);
+            // await NfcManager.mifareClassicHandlerAndroid.mifareClassicAuthenticateA(0, [0x60, 0x90, 0xd0, 0x06, 0x32, 0xf5]);
+            await NfcManager.mifareClassicHandlerAndroid.mifareClassicAuthenticateA(1, [0xa9, 0x91, 0x64, 0x40, 0x07, 0x48]);
+            console.log("Read");
 
-            for (let i = 0; i < 4; i++) {
-                const blockData = (await NfcManager.mifareClassicHandlerAndroid.mifareClassicReadBlock(i))
-                    .map((byte) => byte.toString(16).padStart(2, "0").toUpperCase())
-                    .join(" ");
+            const blockData = (await NfcManager.mifareClassicHandlerAndroid.mifareClassicReadBlock(4))
+                .map((byte) => byte.toString(16).padStart(2, "0").toUpperCase())
+                .join(" ");
 
-                sectorZeroData.push(blockData);
-            }
+            console.log(blockData);
 
-            const NFC_sig = sectorZeroData[2].replaceAll(" ", "").slice(12);
+            const NFC_sig = blockData.replaceAll(" ", "").slice(12);
 
             console.log(`Locker NFC Signature Scanned: ${NFC_sig}`);
             // setTagState(sectorZeroData);
@@ -89,33 +96,60 @@ const NFC = ({ navigation }) => {
                 setIsLoading(false);
 
                 // navigation.navigate("Setup");
-                navigation.reset({
-                    index: 1,
-                    routes: [{ name: "MainScreen" }, { name: "Setup" }],
-                });
+
+                if (allLockersData.val.map((l) => l.nfc_sig).includes(NFC_sig)) {
+                    ToastAndroid.showWithGravity("You have already paired with this locker?!", ToastAndroid.LONG, ToastAndroid.CENTER);
+                    navigation.reset({
+                        index: 0,
+                        routes: [
+                            {
+                                name: "MainScreen",
+                            },
+                        ],
+                    });
+                } else {
+                    pairingCtx.setVal(NFC_sig);
+
+                    navigation.reset({
+                        index: 1,
+                        routes: [{ name: "MainScreen" }, { name: "Setup" }],
+                    });
+                }
             } else {
                 setIsLoading(true);
-                const res =
-                    lockerData.val.lock_status === "locked" ? await LockerService.UnlockLocker(NFC_sig) : await LockerService.LockLocker(NFC_sig);
-                console.log(res);
-                await feed();
-                const newCurrentData = allLockersData.val.filter((f) => f.id === lockerData.val.id)[0];
-                lockerData.setVal({ ...newCurrentData, type: "locker", name: `Locker ${newCurrentData.id}`, enabled: true, navName: "Locker" });
+
+                // console.log(lockerData.val);
+                let res;
+                if (NFC_sig === lockerData.val.nfc_sig) {
+                    res =
+                        lockerData.val.lock_status === "locked" ? await LockerService.UnlockLocker(NFC_sig) : await LockerService.LockLocker(NFC_sig);
+                    console.log(res);
+                    await NfcManager.cancelTechnologyRequest();
+                    feed();
+                    const newCurrentData = allLockersData.val.filter((f) => f.id === lockerData.val.id)[0];
+                    lockerData.setVal({ ...newCurrentData, type: "locker", name: `Locker ${newCurrentData.id}`, enabled: true, navName: "Locker" });
+                } else {
+                    res = {
+                        status: "Mismatch",
+                    };
+                    ToastAndroid.showWithGravity("Locker Mismatch!!", ToastAndroid.SHORT, ToastAndroid.CENTER);
+                }
+
                 setIsLoading(false);
 
-                if (res.status !== "Unallowed") {
-                    ToastAndroid.showWithGravity(res.status, ToastAndroid.SHORT, ToastAndroid.CENTER);
+                if (!["Unallowed", "Mismatch"].includes(res.status)) {
+                    ToastAndroid.showWithGravity(res.status, ToastAndroid.LONG, ToastAndroid.CENTER);
                     NfcManager.cancelTechnologyRequest();
                     navigation.pop(3);
                     return;
                 }
 
-                await NfcManager.cancelTechnologyRequest();
                 await NfcManager.requestTechnology(NfcTech.MifareClassic);
             }
         } catch (ex) {
             console.log("Oops!", ex);
             await NfcManager.cancelTechnologyRequest();
+            navigation.pop(3);
             // setTagState(JSON.stringify(ex));
         }
     };

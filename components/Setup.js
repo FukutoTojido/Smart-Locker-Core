@@ -1,17 +1,51 @@
-import React, { useState } from "react";
-import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import React, { useState, useContext } from "react";
+import { SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View, ToastAndroid } from "react-native";
 import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import { TextInput } from "react-native-paper";
 
+import { PairingContext, AllLockersDataContext, LoadingContext } from "../App";
 import { Section } from "./BasicComponents";
+import LockerService from "../services/LockerService";
+import AuthService from "../services/AuthService";
 
 const Setup = ({ navigation }) => {
     const palette = useMaterialYouPalette();
     const isDarkMode = useColorScheme() === "dark";
+    const pairingCtx = useContext(PairingContext);
+    const loadingCtx = useContext(LoadingContext);
+    const allLockersData = useContext(AllLockersDataContext);
+
     const [lockerName, setLockerName] = useState("");
 
     const backgroundStyle = {
         backgroundColor: palette.system_accent2[11],
+    };
+
+    const feed = async () => {
+        loadingCtx.setVal(true);
+        const resPair = await LockerService.PairLocker(pairingCtx.val, "your grandma house", allLockersData.val.length + 1);
+        pairingCtx.setVal("")
+
+        ToastAndroid.showWithGravity(resPair.status, ToastAndroid.LONG, ToastAndroid.CENTER);
+
+        const res = await AuthService.feedsAll();
+
+        if (JSON.stringify(res) !== "{}") {
+            allLockersData.setVal(
+                res.lockers.map((locker) => {
+                    return {
+                        type: "locker",
+                        ...locker,
+                        name: `Locker ${locker.id}`,
+                        enabled: true,
+                        navName: "Locker",
+                    };
+                })
+            );
+        }
+        loadingCtx.setVal(false);
+
+        // console.log(lockersData);
     };
 
     return (
@@ -19,7 +53,7 @@ const Setup = ({ navigation }) => {
             <StatusBar barStyle={isDarkMode ? "light-content" : "dark-content"} backgroundColor={backgroundStyle.backgroundColor} />
             <ScrollView contentInsetAdjustmentBehavior="automatic" style={[backgroundStyle]} contentContainerStyle={[styles.container, styles.list]}>
                 <View style={[backgroundStyle, styles.container]}>
-                    <Text style={[styles.listTitle, { color: palette.system_accent2[2] }]}>Locker Number 28</Text>
+                    <Text style={[styles.listTitle, { color: palette.system_accent2[2] }]}>Locker Number {allLockersData.val.length + 1}</Text>
                     <TextInput
                         label="Locker's Nickname"
                         value={lockerName}
@@ -41,10 +75,12 @@ const Setup = ({ navigation }) => {
                             },
                         }}
                     />
-                    <Section header="Locker Number" content={28} />
+                    <Section header="Locker Number" content={allLockersData.val.length + 1} />
                     <Section header="Location" content={"your grandma house"} />
                     <TouchableOpacity
-                        onPress={() => {
+                        onPress={async () => {
+                            feed();
+
                             navigation.reset({
                                 index: 0,
                                 routes: [

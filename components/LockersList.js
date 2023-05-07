@@ -6,7 +6,7 @@ import User from "./Header";
 import ListView from "./ListView";
 
 import Auth from "../services/AuthService";
-import { AllLockersDataContext } from "../App";
+import { AllLockersDataContext, LoadingContext } from "../App";
 
 const LockersList = () => {
     const palette = useMaterialYouPalette();
@@ -14,6 +14,7 @@ const LockersList = () => {
     const [lockersData, setLockersData] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const allLockersData = useContext(AllLockersDataContext);
+    const loadingCtx = useContext(LoadingContext);
 
     const backgroundStyle = {
         backgroundColor: palette.system_accent2[11],
@@ -23,7 +24,7 @@ const LockersList = () => {
         const res = await Auth.feedsAll();
 
         if (JSON.stringify(res) !== "{}") {
-            setIsLoading(false);
+            loadingCtx.setVal(false);
             allLockersData.setVal(
                 res.lockers.map((locker) => {
                     return {
@@ -47,9 +48,9 @@ const LockersList = () => {
     }, []);
 
     const onRefresh = useCallback(async () => {
-        setRefreshing(true);
+        loadingCtx.setVal(true);
         await feed();
-        setRefreshing(false);
+        loadingCtx.setVal(false);
     }, []);
 
     return (
@@ -59,7 +60,7 @@ const LockersList = () => {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         >
             <User />
-            <ListView listTitle="Lockers List" itemsList={allLockersData.val} isLoading={isLoading} />
+            <ListView listTitle="Lockers List" itemsList={allLockersData.val} isLoading={loadingCtx.val} />
         </ScrollView>
     );
 };
