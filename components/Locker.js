@@ -55,56 +55,58 @@ const Locker = ({ navigation }) => {
     }, [disposed]);
 
     return (
-            <ScrollView contentInsetAdjustmentBehavior="automatic" style={[backgroundStyle]} contentContainerStyle={[styles.list]}>
-                <View style={[backgroundStyle, styles.container]}>
-                    <Text style={[styles.listTitle, { color: palette.system_accent2[2] }]}>{lockerData.val.name}</Text>
-                    <Input label="Locker's Nickname" val={lockerName} valChange={setLockerName} />
-                    <Section header="Locker Number" content={lockerData.val.id} />
-                    <Section header="Location" content={lockerData.val.location} />
-                    <Section
-                        header="Humidity"
-                        content={`${Object.values(lockerData.val.feeds.filter((f) => f.feed_type === "moisture")[0].feed_data).at(-1)}%`}
-                    />
-                    <Section
-                        header="Temperature"
-                        content={`${Object.values(lockerData.val.feeds.filter((f) => f.feed_type === "temperature")[0].feed_data).at(-1)}°C`}
-                    />
-                    <Button
-                        onPress={() => {
-                            navigation.navigate("Unlock");
-                        }}
-                        textColor={palette.system_accent2[2]}
-                        backgroundColor={palette.system_accent2[10]}
-                        text={lockerData.val.lock_status === "locked" ? "Unlock" : "Lock"}
-                    />
-                    <Button onPress={showDialog} textColor={palette.system_accent2[2]} backgroundColor={"#9A3030"} text={"Dispose"} />
-                    <Dialog.Container
-                        visible={dialog}
-                        contentStyle={{
-                            borderRadius: 10,
-                            backgroundColor: palette.system_accent2[11],
-                        }}
-                        onBackdropPress={hideDialog}
-                        onRequestClose={hideDialog}
-                    >
-                        <Dialog.Title>
-                            <Text
-                                style={{
-                                    fontWeight: 700,
-                                    color: palette.system_accent2[2],
-                                }}
-                            >
-                                Locker dispose
-                            </Text>
-                        </Dialog.Title>
-                        <Dialog.Description>
-                            <Text style={{ color: palette.system_accent2[5] }}>Do you want to dispose this locker? You cannot undo this action.</Text>
-                        </Dialog.Description>
-                        <Dialog.Button label="Cancel" onPress={hideDialog} color={palette.system_accent2[2]} bold={true} />
-                        <Dialog.Button label="Confirm" onPress={toDispose} color={palette.system_accent2[2]} bold={true} />
-                    </Dialog.Container>
-                </View>
-            </ScrollView>
+        <ScrollView contentInsetAdjustmentBehavior="automatic" style={[backgroundStyle]} contentContainerStyle={[styles.list]}>
+            <View style={[backgroundStyle, styles.container]}>
+                <Text style={[styles.listTitle, { color: palette.system_accent2[2] }]}>{lockerData.val.name}</Text>
+                <Input label="Locker's Nickname" val={lockerName} valChange={setLockerName} />
+                <Section header="Locker Number" content={lockerData.val.id} />
+                <Section header="Location" content={lockerData.val.location} />
+                <Section
+                    header="Humidity"
+                    content={`${Object.values(lockerData.val.feeds.filter((f) => f.feed_type === "moisture")[0]?.feed_data ?? { tmp: 0 }).at(-1)}%`}
+                />
+                <Section
+                    header="Temperature"
+                    content={`${Object.values(lockerData.val.feeds.filter((f) => f.feed_type === "temperature")[0]?.feed_data ?? { tmp: 0 }).at(
+                        -1
+                    )}°C`}
+                />
+                <Button
+                    onPress={() => {
+                        navigation.navigate("Unlock");
+                    }}
+                    textColor={palette.system_accent2[2]}
+                    backgroundColor={palette.system_accent2[10]}
+                    text={lockerData.val.lock_status === "locked" ? "Unlock" : "Lock"}
+                />
+                <Button onPress={showDialog} textColor={palette.system_accent2[2]} backgroundColor={"#9A3030"} text={"Dispose"} />
+                <Dialog.Container
+                    visible={dialog}
+                    contentStyle={{
+                        borderRadius: 10,
+                        backgroundColor: palette.system_accent2[11],
+                    }}
+                    onBackdropPress={hideDialog}
+                    onRequestClose={hideDialog}
+                >
+                    <Dialog.Title>
+                        <Text
+                            style={{
+                                fontWeight: 700,
+                                color: palette.system_accent2[2],
+                            }}
+                        >
+                            Locker dispose
+                        </Text>
+                    </Dialog.Title>
+                    <Dialog.Description>
+                        <Text style={{ color: palette.system_accent2[5] }}>Do you want to dispose this locker? You cannot undo this action.</Text>
+                    </Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={hideDialog} color={palette.system_accent2[2]} bold={true} />
+                    <Dialog.Button label="Confirm" onPress={toDispose} color={palette.system_accent2[2]} bold={true} />
+                </Dialog.Container>
+            </View>
+        </ScrollView>
     );
 };
 
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         gap: 20,
-        height: "100%"
+        height: "100%",
         // justifyContent: "center",
         // alignContent: "center",
         // alignItems: "center",
